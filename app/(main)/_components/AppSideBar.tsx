@@ -21,7 +21,7 @@ export function AppSidebar() {
   console.log(path);
   return (
     <Sidebar>
-      <SidebarHeader className="flex items-center w-full">
+      <SidebarHeader className="flex w-full">
         <h1 className="font-bold text-2xl text-blue-800">
           <span className="text-blue-900">AI</span>Cruiter
         </h1>

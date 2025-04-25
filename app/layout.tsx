@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${lexend.variable} antialiased`}>
+      <body className={`${lexend.variable} antialiased bg-gray-200`}>
         {" "}
         <Provider>{children}</Provider>
       </body>

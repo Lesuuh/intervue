@@ -47,7 +47,6 @@ const Provider = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log("hello");
     createNewUser();
   }, []);
 

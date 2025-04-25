@@ -1,0 +1,35 @@
+import {
+  CalendarHeart,
+  LayoutDashboard,
+  List,
+  Settings,
+  WalletCards,
+} from "lucide-react";
+
+export const SidebarOptions = [
+  {
+    name: "Dashboard",
+    icon: LayoutDashboard,
+    path: "/dashboard",
+  },
+  {
+    name: "Schdueled Interview",
+    icon: CalendarHeart,
+    path: "/scheduled-interview",
+  },
+  {
+    name: "All Interviews",
+    icon: List,
+    path: "/all-interview",
+  },
+  {
+    name: "Billing",
+    icon: WalletCards,
+    path: "/billing",
+  },
+  {
+    name: "Settings",
+    icon: Settings,
+    path: "/settings",
+  },
+];

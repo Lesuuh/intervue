@@ -12,7 +12,7 @@ import { InterviewTypes } from "@/services/constants";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const FormContainer = ({ onHandleInputChange }) => {
+const FormContainer = ({ onHandleInputChange, goToNextStep }) => {
   const [interviewType, setInterviewType] = useState<string[]>([]);
   const handleInterviewType = (type: string) => {
     const data = interviewType.includes(type)
@@ -84,7 +84,7 @@ const FormContainer = ({ onHandleInputChange }) => {
         </div>
       </div>
       <div className="mt-5 flex justify-end">
-        <Button>
+        <Button onClick={() => goToNextStep()}>
           Generate Question <ArrowRight />
         </Button>
       </div>

@@ -32,7 +32,7 @@ const CreateNewInterview = () => {
   };
 
   return (
-    <div className="lg:px-40">
+    <div className="">
       <div className="flex gap-2 items-center">
         <ArrowLeft
           onClick={() => router.back()}

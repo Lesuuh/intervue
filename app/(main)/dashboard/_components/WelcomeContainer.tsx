@@ -5,7 +5,6 @@ import Image from "next/image";
 
 const WelcomeContainer = () => {
   const user = useAuthStore((state) => state.user);
-  console.log(user);
   return (
     <div className="bg-white p-3 rounded-2xl w-full flex justify-between items-center shadow-md">
       <div>

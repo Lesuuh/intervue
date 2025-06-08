@@ -12,8 +12,17 @@ import { InterviewTypes } from "@/services/constants";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const FormContainer = ({ onHandleInputChange, goToNextStep }) => {
+interface FormContainerProps {
+  onHandleInputChange: (field: string, value: any) => void;
+  goToNextStep: () => void;
+}
+
+const FormContainer = ({
+  onHandleInputChange,
+  goToNextStep,
+}: FormContainerProps) => {
   const [interviewType, setInterviewType] = useState<string[]>([]);
+
   const handleInterviewType = (type: string) => {
     const data = interviewType.includes(type)
       ? interviewType.filter((item) => item !== type)
@@ -25,6 +34,7 @@ const FormContainer = ({ onHandleInputChange, goToNextStep }) => {
   useEffect(() => {
     onHandleInputChange("interviewType", interviewType);
   }, [interviewType]);
+
   return (
     <div className="p-5 bg-white rounded-xl space-y-2 w-full">
       <div>

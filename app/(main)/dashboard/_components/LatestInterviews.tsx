@@ -13,7 +13,7 @@ const LatestInterviews = () => {
       {interviewList.length == 0 && (
         <div className="p-5 rounded-sm flex gap-3 flex-col items-center bg-white mt-5">
           <Video className="h-10 w-10 text-primary" />
-          <h2>You don't have any interview created!</h2>
+          <h2>You don&#39;t have any interview created!</h2>
           <Link href="/dashboard/create-interview">
             <Button>
               <Plus /> Create New Interview

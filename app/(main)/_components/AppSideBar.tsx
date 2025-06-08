@@ -12,13 +12,26 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { SidebarOptions } from "@/services/constants";
+import { supabase } from "@/services/supabase";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function AppSidebar() {
   const path = usePathname();
-  console.log(path);
+  const router = useRouter();
+
+  // logout function
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error("Error logging out");
+    } else {
+      toast.success("Logout successful");
+      router.push("/login");
+    }
+  };
   return (
     <Sidebar>
       <SidebarHeader className="flex w-full">
@@ -59,7 +72,15 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup />
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <Button
+          onClick={handleLogout}
+          variant="destructive"
+          className="mb-5 w-full cursor-pointer"
+        >
+          Logout
+        </Button>
+      </SidebarFooter>
     </Sidebar>
   );
 }

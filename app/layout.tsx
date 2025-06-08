@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Lexend } from "next/font/google";
 import "./globals.css";
-import Provider from "./Provider";
 import { Toaster } from "sonner";
 
 const lexend = Lexend({
@@ -24,7 +23,7 @@ export default function RootLayout({
       <body className={`${lexend.variable} antialiased bg-gray-200`}>
         {" "}
         <Toaster position="top-right" toastOptions={{}} />
-        <Provider>{children}</Provider>
+        {children}
       </body>
     </html>
   );

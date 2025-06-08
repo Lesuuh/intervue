@@ -31,11 +31,8 @@ export async function POST(req: Request) {
       error instanceof Error ? error.message : "An unknown error occurred";
     const errorStatus =
       typeof error === "object" && error !== null && "status" in error
-        ? (error as any).status
+        ? error.status
         : 500;
-    return NextResponse.json(
-      { message: errorMessage },
-      { status: errorStatus }
-    );
+    return NextResponse.json({ message: errorMessage, status: errorStatus });
   }
 }

@@ -7,11 +7,16 @@ const page = () => {
   const handleGithubLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
     });
     if (error) {
       console.error("Error logging in with Github:", error.message);
+    } else {
     }
   };
+
   return (
     <div className="flex flex-col w-full items-center justify-center h-screen bg-gray-100">
       <div className="w-full max-w-sm p-6 rounded-sm border flex flex-col items-center ">

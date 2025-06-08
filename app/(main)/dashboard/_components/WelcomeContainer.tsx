@@ -1,17 +1,16 @@
 "use client";
-
-import { useUser } from "@/app/Provider";
+import { useAuthStore } from "@/store/useAuthStore";
 import { BellRing } from "lucide-react";
 import Image from "next/image";
 
 const WelcomeContainer = () => {
-  const { user } = useUser();
-  console.log(user?.picture);
+  const user = useAuthStore((state) => state.user);
+  console.log(user);
   return (
     <div className="bg-white p-3 rounded-2xl w-full flex justify-between items-center shadow-md">
       <div>
         <h2 className="text-lg">
-          Welcome back, <span className="font-bold">{user?.name}</span>
+          Welcome back, <span className="font-bold">{user?.username}</span>
         </h2>
         <h2 className="text-gray-500 text-sm">
           AI-Driver Interview Hassel-Free Hiring
@@ -21,8 +20,7 @@ const WelcomeContainer = () => {
         <BellRing />
         {user && (
           <Image
-            //   src={user?.picture}
-            src="https://avatar.iran.liara.run/public/38"
+            src={user?.picture}
             width={40}
             height={40}
             alt="user-image rounded-full"

@@ -32,6 +32,7 @@ const QuestionsList = ({ formData }: QuestionsListProps) => {
       generateQuestionList();
     }
   }, [formData]);
+  console.log(formData);
 
   const generateQuestionList = async () => {
     try {

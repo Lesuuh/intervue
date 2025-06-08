@@ -5,11 +5,15 @@ import OpenAI from "openai";
 export async function POST(req: Request) {
   const { jobPosition, jobDescription, InterviewType, duration } =
     await req.json();
+  console.log(jobPosition);
 
   const FINAL_PROMPT = QUESTIONS_PROMPT.replace("{{jobTitle}}", jobPosition)
     .replace("{{jobDescription}}", jobDescription)
     .replace("{{duration}}", duration)
-    .replace("{{type}}", InterviewType);
+    .replace(
+      "{{type}}",
+      Array.isArray(InterviewType) ? InterviewType.join(", ") : InterviewType
+    );
 
   console.log(FINAL_PROMPT);
   console.log("hello");
@@ -21,7 +25,7 @@ export async function POST(req: Request) {
     });
 
     const completion = await openai.chat.completions.create({
-      model: "google/gemini-2.0-flash-exp:free",
+      model: "deepseek/deepseek-prover-v2:free",
       messages: [{ role: "user", content: FINAL_PROMPT }],
     });
     return NextResponse.json(completion.choices[0].message);

@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import QuestionListContainer from "./QuestionListContainer";
+import { supabase } from "@/services/supabase";
+import { useAuthStore } from "@/store/useAuthStore";
+import { v4 as uuidv4 } from "uuid";
 
 type QuestionsListProps = {
   formData: {
@@ -9,6 +13,11 @@ type QuestionsListProps = {
     jobDescription: string;
     jobPosition: string;
   };
+};
+
+type Question = {
+  question: string;
+  type: string;
 };
 
 const cleanJsonString = (str: string) => {
@@ -24,8 +33,10 @@ const cleanJsonString = (str: string) => {
 
 const QuestionsList = ({ formData }: QuestionsListProps) => {
   const [loading, setLoading] = useState(false);
-  const [questions, setQuestions] = useState<string[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [error, setError] = useState(false);
+  const user = useAuthStore((state) => state.user);
+  console.log(user.email);
 
   useEffect(() => {
     if (formData) {
@@ -68,6 +79,34 @@ const QuestionsList = ({ formData }: QuestionsListProps) => {
     }
   };
 
+  const onFinish = async () => {
+    const interview_id = uuidv4();
+
+    try {
+      const { data, error } = await supabase
+        .from("Interviews")
+        .insert([
+          {
+            ...formData,
+            questionsList: JSON.stringify(questions), // stringify if JSON column
+            userEmail: user?.email,
+            interview_id: interview_id,
+          },
+        ])
+        .select();
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success("Interview Questions generated successfully");
+      console.log(data);
+    } catch (error) {
+      toast.error(`Failed to save interview: ${error.message}`);
+      console.error(error);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center flex-col gap-2 w-full border border-primary rounded-sm p-5 bg-blue-100">
@@ -92,20 +131,7 @@ const QuestionsList = ({ formData }: QuestionsListProps) => {
 
   return (
     <div>
-      <h2>Generated Questions</h2>
-      <div>
-        {questions.length > 0 ? (
-          questions.map((question, index) => (
-            <div key={index} className="p-2 my-2 bg-white rounded-md shadow-sm">
-              <h2 className="text-sm font-semibold">
-                {index + 1}. {question}
-              </h2>
-            </div>
-          ))
-        ) : (
-          <p>No questions generated yet.</p>
-        )}
-      </div>
+      <QuestionListContainer questions={questions} onFinish={onFinish} />
     </div>
   );
 };

@@ -2,21 +2,30 @@ import { QUESTIONS_PROMPT } from "@/services/constants";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
+const MOCK_QUESTIONS = [
+  {
+    question: "Can you explain your experience with React and Next.js?",
+    type: "Technical",
+  },
+  {
+    question: "How do you approach debugging a UI issue?",
+    type: "Problem Solving",
+  },
+  {
+    question:
+      "Describe a time you worked in a team and how you handled conflicts.",
+    type: "Behavioral",
+  },
+];
+
 export async function POST(req: Request) {
   const { jobPosition, jobDescription, InterviewType, duration } =
     await req.json();
-  console.log(jobPosition);
 
   const FINAL_PROMPT = QUESTIONS_PROMPT.replace("{{jobTitle}}", jobPosition)
     .replace("{{jobDescription}}", jobDescription)
     .replace("{{duration}}", duration)
-    .replace(
-      "{{type}}",
-      Array.isArray(InterviewType) ? InterviewType.join(", ") : InterviewType
-    );
-
-  console.log(FINAL_PROMPT);
-  console.log("hello");
+    .replace("{{type}}", InterviewType);
 
   try {
     const openai = new OpenAI({
@@ -25,18 +34,17 @@ export async function POST(req: Request) {
     });
 
     const completion = await openai.chat.completions.create({
-      model: "deepseek/deepseek-prover-v2:free",
+      model: "google/gemini-2.0-flash-exp:free",
       messages: [{ role: "user", content: FINAL_PROMPT }],
     });
+
     return NextResponse.json(completion.choices[0].message);
   } catch (error) {
-    console.log(error);
-    const errorMessage =
-      error instanceof Error ? error.message : "An unknown error occurred";
-    const errorStatus =
-      typeof error === "object" && error !== null && "status" in error
-        ? error.status
-        : 500;
-    return NextResponse.json({ message: errorMessage, status: errorStatus });
+    console.log("OpenAI error, falling back to mock questions:", error);
+
+    // Fallback response when rate limit or other errors occur
+    return NextResponse.json({
+      content: JSON.stringify(MOCK_QUESTIONS),
+    });
   }
 }

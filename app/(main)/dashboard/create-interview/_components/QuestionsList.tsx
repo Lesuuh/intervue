@@ -88,7 +88,7 @@ const QuestionsList = ({ formData }: QuestionsListProps) => {
         .insert([
           {
             ...formData,
-            questionsList: JSON.stringify(questions), // stringify if JSON column
+            questionsList: JSON.stringify(questions), 
             userEmail: user?.email,
             interview_id: interview_id,
           },

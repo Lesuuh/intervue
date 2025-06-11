@@ -17,7 +17,7 @@ const CreateNewInterview = () => {
     jobPosition: "",
     jobDescription: "",
     duration: "",
-    type: [],
+    interviewType: [],
   });
   const [interviewId, setInterviewId] = useState<string | null>(null);
 
@@ -30,7 +30,7 @@ const CreateNewInterview = () => {
       !formData.jobPosition ||
       !formData.jobDescription ||
       !formData.duration ||
-      formData.type.length === 0
+      formData.interviewType.length === 0
     ) {
       toast.error("Please fill all the fields", {
         style: {

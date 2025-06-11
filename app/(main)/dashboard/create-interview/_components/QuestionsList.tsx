@@ -7,17 +7,24 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { v4 as uuidv4 } from "uuid";
 import { Question, QuestionsListProps } from "@/types";
 
+// {
+//   "role": "assistant",
+//   "content": "```json\n{\n  \"interviewQuestions\": [\n    {\n      \"question\": \"Tell me about your experience with React. What are some of the key concepts you've worked with?\",\n      \"type\": \"Technical\"\n    },\n    {\n      \"question\": \"What is JSX? Can you give a brief example?\",\n      \"type\": \"Technical\"\n    },\n    {\n      \"question\": \"What are React components? Explain the difference between functional and class components.\",\n      \"type\": \"Technical\"\n    },\n    {\n      \"question\": \"What is the purpose of `useState` hook in React?\",\n      \"type\": \"Technical\"\n    },\n    {\n      \"question\": \"Have you used Next.js? If so, what is one feature of Next.js that you found particularly useful, and why?\",\n      \"type\": \"Technical\"\n    },\n    {\n      \"question\": \"What are some advantages of using Next.js over a traditional React app?\",\n      \"type\": \"Technical\"\n    },\n    {\n      \"question\": \"What's the difference between `useEffect` and `useLayoutEffect` React hooks?\",\n      \"type\": \"Technical\"\n    },\n    {\n      \"question\": \"How do you handle data fetching in Next.js?\",\n      \"type\": \"Technical\"\n    },\n    {\n      \"question\": \"What are your favorite resources for learning more about React and web development?\",\n      \"type\": \"Experience\"\n    },\n    {\n      \"question\": \"Can you describe a time you encountered a problem while building a React component and how you solved it?\",\n      \"type\": \"Problem Solving\"\n    }\n  ]\n}\n```",
+//   "refusal": null,
+//   "reasoning": null
+// }
+
 // function to clean the json when generated
-const cleanJsonString = (str: string) => {
-  let cleaned = str.trim();
-  if (cleaned.startsWith("```")) {
-    cleaned = cleaned
-      .replace(/^```json\s*/, "")
-      .replace(/```$/, "")
-      .trim();
-  }
-  return cleaned;
-};
+// const cleanJsonString = (str: string) => {
+//   let cleaned = str.trim();
+//   if (cleaned.startsWith("```")) {
+//     cleaned = cleaned
+//       .replace(/^```json\s*/, "")
+//       .replace(/```$/, "")
+//       .trim();
+//   }
+//   return cleaned;
+// };
 
 const QuestionsList = ({ formData, onCreateLink }: QuestionsListProps) => {
   const [loading, setLoading] = useState(false);
@@ -43,15 +50,19 @@ const QuestionsList = ({ formData, onCreateLink }: QuestionsListProps) => {
         throw new Error("Failed to fetch data from server");
       }
 
-      const cleanContent = cleanJsonString(res.data.content);
+      const rawData = res.data;
+      const cleanedData = rawData.replace(/```json|```/g, "").trim();
+      const parsedData = JSON.parse(cleanedData);
 
-      const content = JSON.parse(cleanContent);
+      const result = parsedData.interviewQuestions.map(
+        (item: { question: string; type: string }) => ({
+          question: item.question,
+          type: item.type,
+        })
+      );
 
-      if (!Array.isArray(content)) {
-        throw new Error("Invalid response format: expected an array");
-      }
-
-      setQuestions(content);
+      setQuestions(result);
+      console.log(result);
     } catch (error) {
       toast.error("Server Error, Try again later", {
         style: {

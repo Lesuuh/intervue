@@ -5,21 +5,9 @@ import QuestionListContainer from "./QuestionListContainer";
 import { supabase } from "@/services/supabase";
 import { useAuthStore } from "@/store/useAuthStore";
 import { v4 as uuidv4 } from "uuid";
+import { Question, QuestionsListProps } from "@/types";
 
-type QuestionsListProps = {
-  formData: {
-    duration: string;
-    interviewType: string[];
-    jobDescription: string;
-    jobPosition: string;
-  };
-};
-
-type Question = {
-  question: string;
-  type: string;
-};
-
+// function to clean the json when generated
 const cleanJsonString = (str: string) => {
   let cleaned = str.trim();
   if (cleaned.startsWith("```")) {
@@ -31,20 +19,19 @@ const cleanJsonString = (str: string) => {
   return cleaned;
 };
 
-const QuestionsList = ({ formData }: QuestionsListProps) => {
+const QuestionsList = ({ formData, onCreateLink }: QuestionsListProps) => {
   const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [error, setError] = useState(false);
   const user = useAuthStore((state) => state.user);
-  console.log(user.email);
 
   useEffect(() => {
     if (formData) {
       generateQuestionList();
     }
   }, [formData]);
-  console.log(formData);
 
+  // generate the questions
   const generateQuestionList = async () => {
     try {
       setLoading(true);
@@ -79,21 +66,23 @@ const QuestionsList = ({ formData }: QuestionsListProps) => {
     }
   };
 
+  // push the questions to supabase alongside the interview_id
   const onFinish = async () => {
     const interview_id = uuidv4();
-
     try {
       const { data, error } = await supabase
         .from("Interviews")
         .insert([
           {
             ...formData,
-            questionsList: JSON.stringify(questions), 
+            questionsList: JSON.stringify(questions),
             userEmail: user?.email,
             interview_id: interview_id,
           },
         ])
         .select();
+
+      onCreateLink(interview_id);
 
       if (error) {
         throw error;
@@ -102,7 +91,11 @@ const QuestionsList = ({ formData }: QuestionsListProps) => {
       toast.success("Interview Questions generated successfully");
       console.log(data);
     } catch (error) {
-      toast.error(`Failed to save interview: ${error.message}`);
+      if (error instanceof Error) {
+        toast.error(`Failed to save interview: ${error.message}`);
+      } else {
+        toast.error("Failed to save interview: Unknown error");
+      }
       console.error(error);
     }
   };

@@ -13,7 +13,7 @@ import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface FormContainerProps {
-  onHandleInputChange: (field: string, value: any) => void;
+  onHandleInputChange: (field: string, value: string | string[]) => void;
   goToNextStep: () => void;
 }
 

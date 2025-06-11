@@ -1,13 +1,5 @@
 import { Button } from "@/components/ui/button";
-
-interface Question {
-  question: string;
-  type: string;
-}
-
-interface QuestionListContainerProps {
-  questions: Question[];
-}
+import { QuestionListContainerProps } from "@/types";
 
 const QuestionListContainer = ({
   questions,
@@ -29,7 +21,9 @@ const QuestionListContainer = ({
         ))}
       </div>
       <div className="flex justify-end">
-        <Button onClick={() => onFinish()}>Finish</Button>
+        <Button onClick={() => onFinish()}>
+          Create Interview Link and Finish
+        </Button>
       </div>
     </div>
   );

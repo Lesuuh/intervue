@@ -7,19 +7,31 @@ import FormContainer from "./_components/FormContainer";
 import { useState } from "react";
 import QuestionsList from "./_components/QuestionsList";
 import { toast } from "sonner";
+import InterviewLink from "./_components/InterviewLink";
+import { FormData } from "@/types";
 
 const CreateNewInterview = () => {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState();
+  const [formData, setFormData] = useState<FormData>({
+    jobPosition: "",
+    jobDescription: "",
+    duration: "",
+    type: [],
+  });
+  const [interviewId, setInterviewId] = useState<string | null>(null);
 
-  const onHandleInputChange = (field, value) => {
+  const onHandleInputChange = (field: string, value: string | string[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    console.log("Form Data", formData);
   };
 
   const goToNextStep = () => {
-    if (Object.keys(formData).length <= 3) {
+    if (
+      !formData.jobPosition ||
+      !formData.jobDescription ||
+      !formData.duration ||
+      formData.type.length === 0
+    ) {
       toast.error("Please fill all the fields", {
         style: {
           backgroundColor: "#fee2e2",
@@ -31,25 +43,42 @@ const CreateNewInterview = () => {
     setStep((prev) => prev + 1);
   };
 
+  const onCreateLink = (interview_id: string) => {
+    setInterviewId(interview_id);
+    setStep((prev) => prev + 1);
+  };
+
   return (
-    <div className="">
-      <div className="flex gap-2 items-center">
+    <div>
+      {/* header */}
+      <header className="flex gap-2 items-center">
         <ArrowLeft
           onClick={() => router.back()}
           className="w-5 cursor-pointer"
         />
         <h2 className="font-semibold">Create New Interview</h2>
-      </div>
+      </header>
+
+      {/* progress bar */}
       <div className="my-5">
         <Progress value={step * 33} />
       </div>
-      {step === 1 && (
-        <FormContainer
-          goToNextStep={() => goToNextStep()}
-          onHandleInputChange={onHandleInputChange}
-        />
-      )}
-      {step === 2 && <QuestionsList formData={formData} />}
+
+      {/* content */}
+      <main>
+        {step === 1 && (
+          <FormContainer
+            goToNextStep={goToNextStep}
+            onHandleInputChange={onHandleInputChange}
+          />
+        )}
+        {step === 2 && (
+          <QuestionsList formData={formData} onCreateLink={onCreateLink} />
+        )}
+        {step === 3 && interviewId && (
+          <InterviewLink interviewId={interviewId} formData={formData} />
+        )}
+      </main>
     </div>
   );
 };

@@ -26,7 +26,7 @@ import { Question, QuestionsListProps } from "@/types";
 //   return cleaned;
 // };
 
-const QuestionsList = ({ formData, onCreateLink }: QuestionsListProps) => {
+const QuestionsList = ({ formData, onCreateLink, }: QuestionsListProps) => {
   const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [error, setError] = useState(false);

@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/services/supabase";
 import { useInterviewStore } from "@/store/useInterviewStore";
-import { InterviewDataProps } from "@/types";
-import { TimerIcon, Video } from "lucide-react";
+import { InterviewDetailsProps } from "@/types";
+
+import { Loader2Icon, TimerIcon, Video } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,14 +14,14 @@ import { toast } from "sonner";
 
 const Interview = () => {
   const interviewId = useParams();
-  const [interviewData, setInterviewData] = useState<InterviewDataProps | null>(
-    null
-  );
+  const [interviewData, setInterviewData] =
+    useState<InterviewDetailsProps | null>(null);
   const [isLoading, setisLoading] = useState<boolean>(false);
   const [notFound, setNotFound] = useState(false);
   const [userName, setUserName] = useState("");
-  const setInterview = useInterviewStore((state) => state.setInterview);
-  const interview = useInterviewStore((state) => state.interview);
+  const setInterview = useInterviewStore((state) => state.setInterviewDetails);
+  const setInterviewId = useInterviewStore((state) => state.setInterviewId);
+  const setUsername = useInterviewStore((state) => state.setUsername);
   const router = useRouter();
 
   useEffect(() => {
@@ -48,7 +49,7 @@ const Interview = () => {
 
       if (interviewDetails && interviewDetails.length > 0) {
         setInterviewData(interviewDetails[0]);
-        setInterview(interviewDetails[0].questions ?? []);
+        setInterview(interviewDetails[0]);
       }
     } catch (error) {
       setisLoading(false);
@@ -60,15 +61,16 @@ const Interview = () => {
   };
 
   const onJoinInterview = () => {
-    setInterview(interviewData?.questionsList || []);
     if (!userName) {
       toast.error("Please enter your name to join the interview");
     }
+
+    setUsername(userName);
+    setInterviewId(interviewId?.interview_id as string);
     router.push(
       `/interview/${interviewId?.interview_id}/start?name=${userName}`
     );
   };
-  console.log(interview);
   if (isLoading) {
     return (
       <section className="flex mx-auto w-full justify-center items-center bg-gray-100 min-h-screen ">
@@ -123,7 +125,15 @@ const Interview = () => {
           disabled={!userName}
           className="w-full"
         >
-          <Video /> Join Interview
+          {isLoading ? (
+            <span className="flex items-center gap-2">
+              <Loader2Icon /> Joining...
+            </span>
+          ) : (
+            <span className="flex items-center gap-2">
+              <Video /> Join Interview
+            </span>
+          )}
         </Button>
       </main>
     </section>

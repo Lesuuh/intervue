@@ -25,7 +25,7 @@ export interface InterviewLinkProps {
   formData: FormData;
 }
 
-export interface InterviewDataProps {
+export interface InterviewDetailsProps {
   id: string;
   created_at: string;
   jobPosition: string;
@@ -33,4 +33,13 @@ export interface InterviewDataProps {
   duration: string;
   interviewType: string[];
   questionsList: Question[];
+}
+
+export interface InterviewState {
+  interviewDetails: InterviewDetailsProps | null;
+  username: string;
+  interviewId: string;
+  setInterviewDetails: (details: InterviewDetailsProps) => void;
+  setUsername: (name: string) => void;
+  setInterviewId: (id: string) => void;
 }

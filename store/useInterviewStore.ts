@@ -1,12 +1,26 @@
-import { Question } from "@/types";
+
+import { InterviewDetailsProps, InterviewState } from "@/types";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-interface InterviewState {
-  interview: Question[];
-  setInterview: (questions: Question[]) => void;
-}
+export const useInterviewStore = create<InterviewState>()(
+  persist(
+    (set) => ({
+      interviewDetails: null,
+      username: "",
+      interviewId: "",
 
-export const useInterviewStore = create<InterviewState>((set) => ({
-  interview: [],
-  setInterview: (questions) => set(() => ({ interview: questions || [] })),
-}));
+      setInterviewDetails: (details: InterviewDetailsProps) =>
+        set(() => ({ interviewDetails: details })),
+
+      setUsername: (name: string) =>
+        set(() => ({ username: name })),
+
+      setInterviewId: (id: string) =>
+        set(() => ({ interviewId: id })),
+    }),
+    {
+      name: "interview-storage", 
+    }
+  )
+);

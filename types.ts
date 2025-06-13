@@ -24,3 +24,13 @@ export interface InterviewLinkProps {
   interviewId: string;
   formData: FormData;
 }
+
+export interface InterviewDataProps {
+  id: string;
+  created_at: string;
+  jobPosition: string;
+  jobDescription: string;
+  duration: string;
+  interviewType: string[];
+  questionsList: Question[];
+}

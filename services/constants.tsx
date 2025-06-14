@@ -85,3 +85,26 @@ interviewQuestions = [
 
 Only output the JSON array. Do not add any explanation or extra text.
 `;
+
+export const FEEDBACK_PROMPT = `
+{{conversation}}
+Depends on this Interview Conversation between assistant and user,
+Give me feedback for user interview. Give me rating out of 10 for Technical Skills,
+Communication, Problem Solving, Experience. Also give me summary in 3 lines
+about the interview and one line to let me know whether they are recommended
+for hire or not with a message. Give me response in JSON format:
+
+{
+  "feedback": {
+    "rating": {
+      "technicalSkills": 5,
+      "communication": 6,
+      "problemSolving": 4,
+      "experience": 7
+    },
+    "summary": "The candidate shows a fair level of technical knowledge but still needs improvement in structured problem-solving. Communication was understandable, though slightly informal in approach. Experience appears solid, with practical exposure to real-world projects.",
+    "recommendation": "No",
+    "recommendationMsg": "Candidate has potential but would benefit from further training and hands-on project involvement before taking on this role."
+  }
+}
+`;

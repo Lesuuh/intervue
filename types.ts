@@ -38,8 +38,10 @@ export interface InterviewDetailsProps {
 export interface InterviewState {
   interviewDetails: InterviewDetailsProps | null;
   username: string;
+  userEmail: string;
   interviewId: string;
   setInterviewDetails: (details: InterviewDetailsProps) => void;
   setUsername: (name: string) => void;
+  setUserEmail: (email: string) => void;
   setInterviewId: (id: string) => void;
 }

@@ -3,23 +3,120 @@
 import { useInterviewStore } from "@/store/useInterviewStore";
 import { Bot, CircleUserRoundIcon, Mic, Phone, Timer } from "lucide-react";
 import Vapi from "@vapi-ai/web";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import AlertConfirmation from "./_components/AlertConfirmation";
+import { toast } from "sonner";
+import axios from "axios";
+
+type MessageRole = "system" | "assistant" | "user";
+
+interface ConversationMessage {
+  role: MessageRole;
+  content: string;
+}
+
+// const conversation = [
+//   {
+//     role: "system",
+//     content:
+//       "You are an AI voice assistant conducting interviews.\nYour job is to ask candidates provided interview questions, and assess their responses.\n\nBegin the conversation with a friendly introduction, setting a relaxed yet professional tone. Example:\n\"Hey there! Welcome to your backend interview. Let's get started with a few questions!\"\n\nAsk one question at a time and wait for the candidate's response before proceeding. Keep the questions clear and concise.\n\nQuestions: What is the virtual DOM in React, and how does it improve performance?,Explain the difference between server-side rendering and client-side rendering in Next.js.,How do you optimize performance in a large React application?,What are dynamic routes in Next.js and how do you implement them?,Can you describe a bug you encountered in React and how you solved it?,What is the purpose of the `useEffect` hook in React?,What strategies do you use to manage global state in React apps?,Have you used any component libraries with React or ...",
+//   },
+//   {
+//     role: "assistant",
+//     content: "Hi, Lizzie. How are you? Ready for your interview on back end?",
+//   },
+//   { role: "user", content: "Again, I thought I was doing front end." },
+//   {
+//     role: "assistant",
+//     content:
+//       "You're totally right. My bad. This one's all about front end, especially React and a bit of Next. Js. Thanks for catching that. Hey there. Welcome to your front end interview. Let's get started with a few questions. First up, what is the virtual DOM in React, and how does it improve performance?",
+//   },
+//   {
+//     role: "user",
+//     content:
+//       "Visual dome is just like a light switch type of dome where which, uh, components where, um, it renders, but it doesn't touch the entire component.",
+//   },
+//   { role: "assistant", content: "You're on the right track." },
+//   { role: "user", content: "Alright. Let's let's end the interview." },
+//   {
+//     role: "assistant",
+//     content:
+//       "No worries at all. Sometimes it's just not the day, and that's totally fine. You gave it a shot, and that's what counts. Thanks for chatting. Hope to see you crushing projects soon. Take care.",
+//   },
+// ];
 
 const Start = () => {
-  const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_API_KEY!);
-
+  const vapiRef = useRef<Vapi | null>(null);
   const interviewDetails = useInterviewStore((state) => state.interviewDetails);
   const username = useInterviewStore((state) => state.username);
+  const [activeUser, setActiveUser] = useState(false);
+  const [conversation, setConversation] = useState<ConversationMessage[]>();
 
-  console.log(interviewDetails?.questionsList);
-
+  // initialize vapi instance
   useEffect(() => {
-    if (interviewDetails) {
+    if (!vapiRef.current) {
+      vapiRef.current = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_API_KEY!);
+    }
+
+    const vapi = vapiRef.current;
+
+    // handle then conversation message
+    const handleMessage = (message: any) => {
+      console.log("✅ Message received:", message);
+      if (message?.conversation) {
+        const convo = message.conversation;
+        console.log("✅ Conversation string:", convo);
+        setConversation(convo);
+      }
+    };
+
+    vapi.on("call-start", () => {
+      console.log("Call has started");
+      toast.success("Call connected");
+    });
+
+    vapi.on("speech-start", () => {
+      console.log("Speech has started");
+      setActiveUser(false);
+      toast.info("Ai is speaking");
+    });
+
+    vapi.on("speech-end", () => {
+      console.log("Speech has ended");
+      setActiveUser(true);
+      toast.info("You are speaking");
+    });
+
+    vapi.on("call-end", () => {
+      console.log("Call has stopped");
+      toast.success("Interview Ended");
+    });
+
+    vapi.on("message", handleMessage);
+
+    vapi.on("error", (e) => {
+      console.error(e);
+    });
+
+    // clean up
+    return () => {
+      vapi.off("message", handleMessage);
+      vapi.off("call-start", () => {});
+      vapi.off("speech-start", () => {});
+      vapi.off("speech-end", () => {});
+      vapi.off("call-end", () => {});
+      vapi.off("error", () => {});
+    };
+  }, []);
+
+  // start interview
+  useEffect(() => {
+    if (interviewDetails && vapiRef.current) {
       startCall();
     }
   }, [interviewDetails]);
 
+  // start interview
   const startCall = async () => {
     const rawQuestionList = interviewDetails?.questionsList;
     let parsedList = [];
@@ -38,7 +135,7 @@ const Start = () => {
       (q: { question: string }) => q.question
     );
 
-    await vapi.start({
+    await vapiRef.current?.start({
       name: "AI Recruiter",
       firstMessage: `Hi ${username}, how are you? Ready for your interview on ${interviewDetails?.jobPosition}?`,
       transcriber: {
@@ -97,8 +194,21 @@ Ensure the interview remains focused on React.
     });
   };
 
+  // stop/end the call
   const handleStopInterview = () => {
-    vapi.stop();
+    vapiRef.current?.stop();
+    generateFeedback();
+  };
+
+  const filteredConversation = conversation?.filter(
+    (convo) => convo.role !== "system"
+  );
+  const generateFeedback = async () => {
+    const result = await axios.post("/api/ai-feedbak", {
+      conversation: filteredConversation,
+    });
+
+    console.log(result.data);
   };
 
   return (
@@ -113,15 +223,21 @@ Ensure the interview remains focused on React.
         </div>
         <div className="w-full grid grid-cols-1 my-5 sm:grid-cols-2 gap-3">
           <div className="bg-white w-full h-60 rounded-lg flex justify-center items-center">
-            <div className="flex flex-col items-center ">
+            <div className="flex flex-col items-center relative">
               {" "}
+              {!activeUser && (
+                <span className="absolute inset-0 rounded-full bg-blue-500 opacity-75 animate-ping" />
+              )}
               <Bot />
               <p>Recruiter</p>
             </div>
           </div>
           <div className="bg-white w-full h-60 rounded-lg flex justify-center items-center">
-            <div className="flex flex-col items-center ">
+            <div className="flex flex-col items-center relative">
               {" "}
+              {activeUser && (
+                <span className="absolute inset-0 rounded-full bg-blue-500 opacity-75 animate-ping" />
+              )}
               <CircleUserRoundIcon />
               {username}
             </div>

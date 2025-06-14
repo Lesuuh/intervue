@@ -19,9 +19,11 @@ const Interview = () => {
   const [isLoading, setisLoading] = useState<boolean>(false);
   const [notFound, setNotFound] = useState(false);
   const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const setInterview = useInterviewStore((state) => state.setInterviewDetails);
   const setInterviewId = useInterviewStore((state) => state.setInterviewId);
   const setUsername = useInterviewStore((state) => state.setUsername);
+  const setEmail = useInterviewStore((state) => state.setUserEmail);
   const router = useRouter();
 
   useEffect(() => {
@@ -66,6 +68,7 @@ const Interview = () => {
     }
 
     setUsername(userName);
+    setEmail(userEmail);
     setInterviewId(interviewId?.interview_id as string);
     router.push(
       `/interview/${interviewId?.interview_id}/start?name=${userName}`
@@ -109,15 +112,32 @@ const Interview = () => {
           <span>{interviewData?.duration} Minutes</span>
         </div>
         <div className="w-full flex flex-col items-start justify-center">
-          <label htmlFor="name">Enter your name </label>
-          <Input
-            type="text"
-            name="name"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            placeholder="e.g Jane Smith"
-            id="name"
-          />
+          <div className="w-full">
+            <label htmlFor="name" className="text-[.9rem]">
+              Enter your name{" "}
+            </label>
+            <Input
+              type="text"
+              name="name"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              placeholder="e.g Jane Smith"
+              id="name"
+            />
+          </div>
+          <div className="w-full">
+            <label htmlFor="email" className="text-[.9rem]">
+              Enter your email{" "}
+            </label>
+            <Input
+              type="text"
+              name="email"
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              placeholder="e.g janesmith@gmail.com"
+              id="email"
+            />
+          </div>
         </div>
 
         <Button

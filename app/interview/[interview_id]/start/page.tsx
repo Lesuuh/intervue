@@ -7,50 +7,44 @@ import { useEffect, useRef, useState } from "react";
 import AlertConfirmation from "./_components/AlertConfirmation";
 import { toast } from "sonner";
 import axios from "axios";
+import { ConversationMessage } from "@/types";
 
-type MessageRole = "system" | "assistant" | "user";
-
-interface ConversationMessage {
-  role: MessageRole;
-  content: string;
-}
-
-// const conversation = [
-//   {
-//     role: "system",
-//     content:
-//       "You are an AI voice assistant conducting interviews.\nYour job is to ask candidates provided interview questions, and assess their responses.\n\nBegin the conversation with a friendly introduction, setting a relaxed yet professional tone. Example:\n\"Hey there! Welcome to your backend interview. Let's get started with a few questions!\"\n\nAsk one question at a time and wait for the candidate's response before proceeding. Keep the questions clear and concise.\n\nQuestions: What is the virtual DOM in React, and how does it improve performance?,Explain the difference between server-side rendering and client-side rendering in Next.js.,How do you optimize performance in a large React application?,What are dynamic routes in Next.js and how do you implement them?,Can you describe a bug you encountered in React and how you solved it?,What is the purpose of the `useEffect` hook in React?,What strategies do you use to manage global state in React apps?,Have you used any component libraries with React or ...",
-//   },
-//   {
-//     role: "assistant",
-//     content: "Hi, Lizzie. How are you? Ready for your interview on back end?",
-//   },
-//   { role: "user", content: "Again, I thought I was doing front end." },
-//   {
-//     role: "assistant",
-//     content:
-//       "You're totally right. My bad. This one's all about front end, especially React and a bit of Next. Js. Thanks for catching that. Hey there. Welcome to your front end interview. Let's get started with a few questions. First up, what is the virtual DOM in React, and how does it improve performance?",
-//   },
-//   {
-//     role: "user",
-//     content:
-//       "Visual dome is just like a light switch type of dome where which, uh, components where, um, it renders, but it doesn't touch the entire component.",
-//   },
-//   { role: "assistant", content: "You're on the right track." },
-//   { role: "user", content: "Alright. Let's let's end the interview." },
-//   {
-//     role: "assistant",
-//     content:
-//       "No worries at all. Sometimes it's just not the day, and that's totally fine. You gave it a shot, and that's what counts. Thanks for chatting. Hope to see you crushing projects soon. Take care.",
-//   },
-// ];
+const conversation: ConversationMessage[] = [
+  {
+    role: "system",
+    content:
+      "You are an AI voice assistant conducting interviews.\nYour job is to ask candidates provided interview questions, and assess their responses.\n\nBegin the conversation with a friendly introduction, setting a relaxed yet professional tone. Example:\n\"Hey there! Welcome to your backend interview. Let's get started with a few questions!\"\n\nAsk one question at a time and wait for the candidate's response before proceeding. Keep the questions clear and concise.\n\nQuestions: What is the virtual DOM in React, and how does it improve performance?,Explain the difference between server-side rendering and client-side rendering in Next.js.,How do you optimize performance in a large React application?,What are dynamic routes in Next.js and how do you implement them?,Can you describe a bug you encountered in React and how you solved it?,What is the purpose of the `useEffect` hook in React?,What strategies do you use to manage global state in React apps?,Have you used any component libraries with React or ...",
+  },
+  {
+    role: "assistant",
+    content: "Hi, Lizzie. How are you? Ready for your interview on back end?",
+  },
+  { role: "user", content: "Again, I thought I was doing front end." },
+  {
+    role: "assistant",
+    content:
+      "You're totally right. My bad. This one's all about front end, especially React and a bit of Next. Js. Thanks for catching that. Hey there. Welcome to your front end interview. Let's get started with a few questions. First up, what is the virtual DOM in React, and how does it improve performance?",
+  },
+  {
+    role: "user",
+    content:
+      "Visual dome is just like a light switch type of dome where which, uh, components where, um, it renders, but it doesn't touch the entire component.",
+  },
+  { role: "assistant", content: "You're on the right track." },
+  { role: "user", content: "Alright. Let's let's end the interview." },
+  {
+    role: "assistant",
+    content:
+      "No worries at all. Sometimes it's just not the day, and that's totally fine. You gave it a shot, and that's what counts. Thanks for chatting. Hope to see you crushing projects soon. Take care.",
+  },
+];
 
 const Start = () => {
   const vapiRef = useRef<Vapi | null>(null);
   const interviewDetails = useInterviewStore((state) => state.interviewDetails);
   const username = useInterviewStore((state) => state.username);
   const [activeUser, setActiveUser] = useState(false);
-  const [conversation, setConversation] = useState<ConversationMessage[]>();
+  // const [conversation, setConversation] = useState<ConversationMessage[]>();
 
   // initialize vapi instance
   useEffect(() => {
@@ -66,7 +60,7 @@ const Start = () => {
       if (message?.conversation) {
         const convo = message.conversation;
         console.log("✅ Conversation string:", convo);
-        setConversation(convo);
+        // setConversation(convo);
       }
     };
 
@@ -112,7 +106,7 @@ const Start = () => {
   // start interview
   useEffect(() => {
     if (interviewDetails && vapiRef.current) {
-      startCall();
+      // startCall();
     }
   }, [interviewDetails]);
 
@@ -203,12 +197,16 @@ Ensure the interview remains focused on React.
   const filteredConversation = conversation?.filter(
     (convo) => convo.role !== "system"
   );
-  const generateFeedback = async () => {
-    const result = await axios.post("/api/ai-feedbak", {
-      conversation: filteredConversation,
-    });
 
-    console.log(result.data);
+  // generate feedback
+  const generateFeedback = async () => {
+    try {
+      const result = await axios.post("/api/ai-feedback", filteredConversation);
+
+      console.log(result.data);
+    } catch (error) {
+      console.error("Error generating feedback:", error);
+    }
   };
 
   return (

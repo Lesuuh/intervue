@@ -87,24 +87,38 @@ Only output the JSON array. Do not add any explanation or extra text.
 `;
 
 export const FEEDBACK_PROMPT = `
+You are an AI interviewer assistant. Below is a conversation between an AI assistant and a candidate during a technical interview:
+
 {{conversation}}
-Depends on this Interview Conversation between assistant and user,
-Give me feedback for user interview. Give me rating out of 10 for Technical Skills,
-Communication, Problem Solving, Experience. Also give me summary in 3 lines
-about the interview and one line to let me know whether they are recommended
-for hire or not with a message. Give me response in JSON format:
+
+Based on this interview, provide constructive feedback on the candidate's performance. Your response should include:
+
+1. A rating out of 10 for the following categories:
+   - Technical Skills
+   - Communication
+   - Problem Solving
+   - Experience
+
+2. A brief summary (maximum 3 lines) highlighting the overall impression of the candidate's strengths and areas for improvement.
+
+3. A recommendation: Should this candidate be considered for hiring? Respond with "Yes" or "No".
+
+4. A short recommendation message (1 line) to justify your hiring decision.
+
+Return your response in valid JSON format exactly like the following structure:
 
 {
   "feedback": {
     "rating": {
-      "technicalSkills": 5,
-      "communication": 6,
-      "problemSolving": 4,
-      "experience": 7
+      "technicalSkills": 0,
+      "communication": 0,
+      "problemSolving": 0,
+      "experience": 0
     },
-    "summary": "The candidate shows a fair level of technical knowledge but still needs improvement in structured problem-solving. Communication was understandable, though slightly informal in approach. Experience appears solid, with practical exposure to real-world projects.",
-    "recommendation": "No",
-    "recommendationMsg": "Candidate has potential but would benefit from further training and hands-on project involvement before taking on this role."
+    "summary": "",
+    "recommendation": "",
+    "recommendationMsg": ""
   }
 }
-`;
+`.trim();
+

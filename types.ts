@@ -45,3 +45,10 @@ export interface InterviewState {
   setUserEmail: (email: string) => void;
   setInterviewId: (id: string) => void;
 }
+
+type MessageRole = "system" | "assistant" | "user";
+
+export interface ConversationMessage {
+  role: MessageRole;
+  content: string;
+}

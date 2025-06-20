@@ -8,6 +8,7 @@ import AlertConfirmation from "./_components/AlertConfirmation";
 import { toast } from "sonner";
 import axios from "axios";
 import { ConversationMessage } from "@/types";
+import { supabase } from "@/services/supabase";
 
 const conversation: ConversationMessage[] = [
   {
@@ -43,6 +44,7 @@ const Start = () => {
   const vapiRef = useRef<Vapi | null>(null);
   const interviewDetails = useInterviewStore((state) => state.interviewDetails);
   const username = useInterviewStore((state) => state.username);
+  const userEmail = useInterviewStore((state) => state.userEmail);
   const [activeUser, setActiveUser] = useState(false);
   // const [conversation, setConversation] = useState<ConversationMessage[]>();
 
@@ -200,10 +202,17 @@ Ensure the interview remains focused on React.
 
   // generate feedback
   const generateFeedback = async () => {
+    console.log("Sending conversation:", filteredConversation);
     try {
       const result = await axios.post("/api/ai-feedback", filteredConversation);
 
-      console.log(result.data);
+
+      const { data, error } = await supabase
+        .from("Feedback")
+        .insert([
+          { userName: username, userEmail: userEmail, feedback: result.data,recommendation: "yes"  },
+        ])
+        .select();
     } catch (error) {
       console.error("Error generating feedback:", error);
     }

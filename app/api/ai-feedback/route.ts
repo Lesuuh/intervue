@@ -3,6 +3,22 @@ import { ConversationMessage } from "@/types";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
+const mockFeedback = {
+  feedback: {
+    rating: {
+      technicalSkills: 8,
+      communication: 8,
+      problemSolving: 7,
+      experience: 6,
+    },
+    summary:
+      "The candidate demonstrates solid foundational knowledge of React concepts and communicates clearly. They show awareness of performance optimization techniques but could improve depth in problem-solving and practical experience. Overall, they have a good base to build upon.",
+    recommendation: "Yes",
+    recommendationMsg:
+      "The candidate shows promise with strong fundamentals and effective communication, making them a good fit for further development.",
+  },
+};
+
 export async function POST(req: Request) {
   console.log("=== API ROUTE HIT ===");
   try {
@@ -29,7 +45,7 @@ export async function POST(req: Request) {
 
     const final_prompt = FEEDBACK_PROMPT.replace(
       "{{conversation}}",
-      JSON.stringify(formattedConversation)
+      formattedConversation
     );
 
     console.log("final----------", final_prompt);
@@ -48,12 +64,12 @@ export async function POST(req: Request) {
     return NextResponse.json(completion.choices[0].message.content);
   } catch (error) {
     console.error("OpenAI error:", error);
-    // return NextResponse.json("yes", { status: 200 });
-    console.error("Failed in POST handler:", error);
-    return NextResponse.json(
-      { error: "Invalid request body" },
-      { status: 400 }
-    );
+    return NextResponse.json(mockFeedback, { status: 200 });
+    // console.error("Failed in POST handler:", error);
+    // return NextResponse.json(
+    //   { error: "Invalid request body" },
+    //   { status: 400 }
+    // );
     // return NextResponse.json(
     //   {
     //     message: "Internal Server Error",

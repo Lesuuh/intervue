@@ -31,7 +31,7 @@ const CreateAccount = () => {
         {
           email: email,
           name: name,
-          credit: 0,
+          credits: 0,
         },
       ]);
 

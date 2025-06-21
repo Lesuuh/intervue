@@ -3,45 +3,65 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/services/supabase";
-import { useAuthStore } from "@/store/useAuthStore";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const Login = () => {
+const CreateAccount = () => {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const setUser = useAuthStore((state) => state.setUser);
-  const router = useRouter();
 
-  async function signInWithEmail() {
-    const { data, error } = await supabase.auth.signInWithPassword({
+  async function signUpNewUser() {
+    const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
+      options: {
+        emailRedirectTo: "https://localhost/3000/login",
+      },
     });
-    router.push("/dashboard");
-    setUser(data);
-
     if (error) {
       toast.error(error.message);
       console.error(error.message);
+      return;
+    }
+
+    if (data.user) {
+      const { error } = await supabase.from("Users").insert([
+        {
+          email: email,
+          name: name,
+          credit: 0,
+        },
+      ]);
+
+      if (error) {
+        toast.error(error.message);
+        console.error(error.message);
+      }
     }
   }
-
   return (
     <div className="flex flex-col w-full items-center justify-center h-screen bg-gray-100">
       <div className="w-full max-w-sm p-6 rounded-sm border flex flex-col items-center ">
         <h2 className="text-2xl font-bold">Welcome to AI Cruiter</h2>
-        <p>Login</p>
+        <p>Create Account</p>
 
         <div className="w-full flex flex-col gap-3 my-5">
+          <Input
+            type="text"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="John Doe"
+            className="px-2 py-1 w-full"
+          />
           <Input
             type="email"
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
+            placeholder="johndoe@yourmail.com"
             className="px-2 py-1 w-full"
           />
           <Input
@@ -49,19 +69,19 @@ const Login = () => {
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            className="px-2 py-1 w-full"
+            placeholder="......"
+            className="px-2 py-1 w-full placeholder:text-[2rem]"
           />
         </div>
         <div className="w-full flex justify-center mt-2">
-          <Button onClick={signInWithEmail} className="w-full">
+          <Button className="w-full" onClick={signUpNewUser}>
             Create Account
           </Button>
         </div>
         <p className="text-[.8rem] text-gray-500 py-2 cursor-pointer">
-          Don&apos;t have an account,{" "}
+          Already have an account?,{" "}
           <span className="text-blue-600 underline">
-            <Link href="/create-account">Create account</Link>
+            <Link href="/login">Login</Link>
           </span>
         </p>
       </div>
@@ -69,4 +89,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default CreateAccount;

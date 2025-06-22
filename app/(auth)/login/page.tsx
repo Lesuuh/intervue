@@ -41,7 +41,7 @@ const Login = () => {
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
+            placeholder="johndoe@yourmail.com"
             className="px-2 py-1 w-full"
           />
           <Input
@@ -49,12 +49,12 @@ const Login = () => {
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            className="px-2 py-1 w-full"
+            placeholder="******"
+            className="px-2 py-1 w-full placeholder:text-[1.2rem]"
           />
         </div>
         <div className="w-full flex justify-center mt-2">
-          <Button onClick={signInWithEmail} className="w-full">
+          <Button onClick={signInWithEmail} className="w-full cursor-pointer">
             Create Account
           </Button>
         </div>

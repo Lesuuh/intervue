@@ -1,21 +1,30 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/useAuthStore";
-import { BellRing } from "lucide-react";
+import { Plus } from "lucide-react";
 
 const WelcomeContainer = () => {
   const user = useAuthStore((state) => state.user);
   return (
-    <div className="bg-white p-3 rounded-2xl w-full flex justify-between items-center shadow-md">
+    <div className="space-y-4">
       <div>
-        <h2 className="text-lg">
-          Welcome back, <span className="font-bold">{user?.username}</span>
-        </h2>
-        <h2 className="text-gray-500 text-sm">
-          AI-Driver Interview Hassel-Free Hiring
-        </h2>
+        <h2 className="font-semibold text-[2rem] ">Welcome back, lesuuh</h2>
+        <p className="text-gray-600">
+          Great interview start with great questions
+        </p>
       </div>
-      <div className="flex items-center gap-3">
-        <BellRing />
+      <div className="flex flex-col sm:flex-row space-x-4 items-center justify-between p-6 bg-gradient-to-r from-black to-slate-800 rounded-lg text-white">
+        <div>
+          <h3 className="text-lg font-semibold text-[1.4rem]">
+            Create Your Next Interview
+          </h3>
+          <p className="text-sm text-slate-300">
+            Generate AI-powered questions and share interview links in minutes
+          </p>
+        </div>
+        <Button className="flex cursor-pointer bg-secondary text-primary items-center gap-2">
+          <Plus /> Create Interview
+        </Button>
       </div>
     </div>
   );

@@ -44,7 +44,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <AppSidebar />
         <div className="w-full">
           <div>
-            <SidebarTrigger />
+            {/* <SidebarTrigger /> */}
           </div>
           <div className="w-full p-10">
             <WelcomeContainer />

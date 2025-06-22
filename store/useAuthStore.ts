@@ -6,11 +6,13 @@ interface UserState {
   user: any;
   setUser: (user: any) => void;
   createNewUser: () => Promise<void>;
+  clearUser: ()=> void
 }
 
 export const useAuthStore = create<UserState>((set) => ({
   user: null,
   setUser: (user) => set({ user }),
+  clearUser: ()=> set({user: null}),
 
   createNewUser: async () => {
     const { data, error: userError } = await supabase.auth.getUser();

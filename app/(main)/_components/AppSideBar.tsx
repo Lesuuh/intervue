@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import { SidebarOptions } from "@/services/constants";
 import { supabase } from "@/services/supabase";
+import { useAuthStore } from "@/store/useAuthStore";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -21,6 +22,7 @@ import { toast } from "sonner";
 export function AppSidebar() {
   const path = usePathname();
   const router = useRouter();
+  const clearUser = useAuthStore((state)=> state.clearUser)
 
   // logout function
   const handleLogout = async () => {
@@ -28,6 +30,7 @@ export function AppSidebar() {
     if (error) {
       toast.error("Error logging out");
     } else {
+      clearUser()
       toast.success("Logout successful");
       router.push("/login");
     }

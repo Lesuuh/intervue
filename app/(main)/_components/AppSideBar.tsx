@@ -14,7 +14,8 @@ import {
 import { SidebarOptions } from "@/services/constants";
 import { supabase } from "@/services/supabase";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Plus } from "lucide-react";
+import { Separator } from "@radix-ui/react-separator";
+import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -37,13 +38,12 @@ export function AppSidebar() {
   };
   return (
     <Sidebar>
-      <SidebarHeader className="flex w-full">
-        <h1 className="font-bold text-2xl text-blue-800">
-          <span className="text-blue-900">AI</span>Cruiter
+      <SidebarHeader className="flex w-full ">
+        <h1 className="font-semibold text-xl text-blue-800 ">
+          <span className="text-primary">AI Interviews</span>
         </h1>
-        <Button className="w-full mt-5 cursor-pointer">
-          <Plus /> Create new Interview
-        </Button>
+      <Separator className="my-2 h-px w-full bg-gray-200" />
+  
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -53,14 +53,14 @@ export function AppSidebar() {
                 <SidebarMenuItem key={index} className="p-1">
                   <SidebarMenuButton
                     asChild
-                    className={`${path == option.path && "bg-blue-50"}`}
+                    className={`text-gray-700 ${path == option.path && "bg-gray-200 hover:bg-gray-100 "}`}
                   >
                     <Link href={option.path}>
                       <option.icon
                         className={`${path == option.path && "text-primary"}`}
                       />
                       <span
-                        className={`text-[1rem] font-medium ${
+                        className={`text-[1rem] font-semibold ${
                           path == option.path && "text-primary"
                         }`}
                       >
@@ -75,14 +75,19 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup />
       </SidebarContent>
+      <Separator className="my-2 h-px w-full bg-gray-200" />
       <SidebarFooter>
-        <Button
-          onClick={handleLogout}
-          variant="destructive"
-          className="mb-5 w-full cursor-pointer"
-        >
-          Logout
-        </Button>
+       <div className="flex items-center gap-2">
+        <p className="bg-gray-300 w-10 h-10 rounded-full justify-center items-center flex">L</p>
+        <div>
+          <p>Lesuuh</p>
+          <p className="text-gray-700">lesuuh01@gmail.com</p>
+        </div>
+       </div>
+       <div>
+        <button onClick={handleLogout} className="text-center p-2 w-full flex items-center gap-2 font-semibold text-[1rem] text-gray-800"><LogOut size={16}/>  Logout</button>
+       </div>
+ 
       </SidebarFooter>
     </Sidebar>
   );

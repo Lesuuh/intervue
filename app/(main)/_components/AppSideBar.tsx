@@ -53,7 +53,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={index} className="p-1">
                   <SidebarMenuButton
                     asChild
-                    className={` ${path == option.path && "bg-blue-50"}`}
+                    className={`${path == option.path && "bg-blue-50"}`}
                   >
                     <Link href={option.path}>
                       <option.icon

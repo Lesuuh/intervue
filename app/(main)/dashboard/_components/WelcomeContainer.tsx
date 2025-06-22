@@ -1,7 +1,6 @@
 "use client";
 import { useAuthStore } from "@/store/useAuthStore";
 import { BellRing } from "lucide-react";
-import Image from "next/image";
 
 const WelcomeContainer = () => {
   const user = useAuthStore((state) => state.user);
@@ -17,14 +16,6 @@ const WelcomeContainer = () => {
       </div>
       <div className="flex items-center gap-3">
         <BellRing />
-        {user && (
-          <Image
-            src={user?.picture}
-            width={40}
-            height={40}
-            alt="user-image rounded-full"
-          />
-        )}
       </div>
     </div>
   );

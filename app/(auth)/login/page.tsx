@@ -20,13 +20,13 @@ const Login = () => {
       email: email,
       password: password,
     });
-    router.push("/dashboard");
-    setUser(data);
-
     if (error) {
-      toast.error(error.message);
-      console.error(error.message);
+      console.error("Full error:", error);
+      toast.error(error.message || "Something went wrong");
+      return;
     }
+    setUser(data);
+    router.push("/dashboard");
   }
 
   return (
@@ -61,7 +61,7 @@ const Login = () => {
         <p className="text-[.8rem] text-gray-500 py-2 cursor-pointer">
           Don&apos;t have an account,{" "}
           <span className="text-blue-600 underline">
-            <Link href="/create-account">Create account</Link>
+            <Link href="/create-account">Login</Link>
           </span>
         </p>
       </div>

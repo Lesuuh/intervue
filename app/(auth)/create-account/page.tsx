@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/services/supabase";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -11,22 +12,25 @@ const CreateAccount = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter()
 
   async function signUpNewUser() {
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
-      options: {
-        emailRedirectTo: "https://localhost/3000/login",
-      },
     });
+
+    if(data){
+      router.push("/login")
+    }
     if (error) {
-      toast.error(error.message);
-      console.error(error.message);
+      console.error("Full error:", error);
+      toast.error(error.message || "Something went wrong");
       return;
     }
 
     if (data.user) {
+      toast.success("Account created Successfully!");
       const { error } = await supabase.from("Users").insert([
         {
           email: email,
@@ -36,8 +40,9 @@ const CreateAccount = () => {
       ]);
 
       if (error) {
-        toast.error(error.message);
-        console.error(error.message);
+        console.error("Full error:", error);
+        toast.error(error.message || "Something went wrong");
+        return;
       }
     }
   }

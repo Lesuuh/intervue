@@ -80,6 +80,7 @@ const Interview = () => {
       </div>
     );
   }
+
   // if (notFound || !interviewData) {
   //   return (
   //     <section className="flex mx-auto w-full justify-center items-center bg-gray-100 min-h-screen ">

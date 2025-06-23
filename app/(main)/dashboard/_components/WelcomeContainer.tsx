@@ -15,7 +15,7 @@ const WelcomeContainer = () => {
           start with great questions
         </p>
       </div>
-      <div className="flex flex-col sm:flex-row space-x-4 items-center justify-between p-10 bg-gradient-to-r from-black to-slate-800 rounded-lg text-white">
+      <div className="flex flex-col sm:flex-row space-x-4 items-center justify-between p-5 sm:p-10 bg-gradient-to-r from-black to-slate-800 rounded-lg text-white">
         <div>
           <h3 className="font-semibold text-3xl mb-2">
             Create Your Next Interview
@@ -27,7 +27,7 @@ const WelcomeContainer = () => {
         <Link href="/create-interview" className="w-full sm:w-auto">
           <Button
             variant={"outline"}
-            className="flex cursor-pointer mt-2 sm:mt-0 text-primary items-center gap-2"
+            className="flex cursor-pointer mt-4 sm:mt-0 text-primary items-center gap-2"
           >
             <Plus /> Create Interview
           </Button>

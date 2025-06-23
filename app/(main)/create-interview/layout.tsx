@@ -27,10 +27,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         />
         <p className="text-sm">Back to Dashboard</p>
       </header>
-      <div className="w-full bg-white rounded-lg shadow-md p-6">
+      <div className="w-full bg-white rounded-lg shadow-md p-5 md:p-6">
         <main>
           {/* Step Progress Indicator */}
-          <div className="flex items-center justify-between mb-5 gap-4">
+          <div className="md:flex items-center justify-between mb-5 gap-4 hidden ">
             {progressSteps.map((progressStep, index) => (
               <React.Fragment key={index}>
                 <div className="flex items-center gap-2 mr-5 flex-nowrap">

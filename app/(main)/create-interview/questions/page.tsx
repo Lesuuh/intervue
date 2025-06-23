@@ -77,7 +77,7 @@ const Questions = () => {
         ))}
       </main>
       <Separator className="my-2 h-px w-full bg-gray-200 mt-10" />
-      <div className="flex items-center justify-between mt-6">
+      <div className="flex flex-col space-y-3 items-center justify-between mt-6">
         <p className="flex items-center gap-2 text-gray-600 text-xs">
           {questionList.length} questions <Dot /> Estimated duration: 30 minutes
         </p>

@@ -2,12 +2,11 @@
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./_components/AppSideBar";
-import WelcomeContainer from "./dashboard/_components/WelcomeContainer";
 import { useEffect, useState } from "react";
 import { supabase } from "@/services/supabase";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Loader } from "lucide-react";
+import { Loader, Menu } from "lucide-react";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -43,9 +42,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <SidebarProvider>
         <AppSidebar />
         <div className="w-full">
-          <div>{/* <SidebarTrigger /> */}</div>
-
-          <div className="px-10 bg-gray-200">{children}</div>
+          <div className="">
+            <SidebarTrigger />
+          </div>
+          <div className="px-4 bg-gray-200">{children}</div>
         </div>
       </SidebarProvider>
     </div>

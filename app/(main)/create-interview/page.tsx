@@ -21,11 +21,10 @@ const CreateNewInterview = () => {
   const setFormData = useFormStore((state) => state.setFormData);
   const formData = useFormStore((state) => state.formData);
 
-
   const onHandleInputChange = (field: string, value: string | string[]) => {
     setFormDetails((prev) => ({ ...prev, [field]: value }));
   };
-  
+
   const goToNextStep = () => {
     if (
       !formDetails.jobPosition ||

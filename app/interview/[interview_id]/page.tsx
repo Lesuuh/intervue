@@ -6,7 +6,7 @@ import { supabase } from "@/services/supabase";
 import { useInterviewStore } from "@/store/useInterviewStore";
 import { InterviewDetailsProps } from "@/types";
 
-import { Loader2Icon, TimerIcon, Video } from "lucide-react";
+import { Loader, Loader2Icon, TimerIcon, Video } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,7 +17,6 @@ const Interview = () => {
   const [interviewData, setInterviewData] =
     useState<InterviewDetailsProps | null>(null);
   const [isLoading, setisLoading] = useState<boolean>(false);
-  const [notFound, setNotFound] = useState(false);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const setInterview = useInterviewStore((state) => state.setInterviewDetails);
@@ -31,11 +30,10 @@ const Interview = () => {
   }, []);
 
   const getInterviewDetails = async () => {
+    setisLoading(true);
     try {
-      setisLoading(true);
       if (!interviewId?.interview_id) {
         setisLoading(false);
-        setNotFound(true);
         toast.error("Interview is missing or not found");
         return;
       }
@@ -74,26 +72,24 @@ const Interview = () => {
       `/interview/${interviewId?.interview_id}/start?name=${userName}`
     );
   };
+
   if (isLoading) {
     return (
-      <section className="flex mx-auto w-full justify-center items-center bg-gray-100 min-h-screen ">
-        <main className="flex flex-col bg-white w-full max-w-xl px-20 py-4 rounded-lg items-center justify-center gap-4">
-          <h2>Loading...</h2>
-        </main>
-      </section>
+      <div className="flex items-center  min-h-screen justify-center p-4">
+        <Loader className="h-6 w-6 animate-spin text-black" />
+      </div>
     );
   }
-
-  if (notFound || !interviewData) {
-    return (
-      <section className="flex mx-auto w-full justify-center items-center bg-gray-100 min-h-screen ">
-        <main className="flex flex-col bg-white w-full max-w-xl px-20 py-4 rounded-lg items-center justify-center gap-4">
-          <h2>Interview not found</h2>
-          <p>Please check the interview link or contact support.</p>
-        </main>
-      </section>
-    );
-  }
+  // if (notFound || !interviewData) {
+  //   return (
+  //     <section className="flex mx-auto w-full justify-center items-center bg-gray-100 min-h-screen ">
+  //       <main className="flex flex-col bg-white w-full max-w-xl px-20 py-4 rounded-lg items-center justify-center gap-4">
+  //         <h2>Interview not found</h2>
+  //         <p>Please check the interview link or contact support.</p>
+  //       </main>
+  //     </section>
+  //   );
+  // }
 
   return (
     <section className="flex mx-auto w-full justify-center items-center bg-gray-100 min-h-screen ">

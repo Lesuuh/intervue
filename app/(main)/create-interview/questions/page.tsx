@@ -1,4 +1,7 @@
-import { Pen, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@radix-ui/react-separator";
+import { Dot, Pen, Trash2 } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 const questionList = [
@@ -73,6 +76,15 @@ const Questions = () => {
           </div>
         ))}
       </main>
+      <Separator className="my-2 h-px w-full bg-gray-200 mt-10" />
+      <div className="flex items-center justify-between mt-6">
+        <p className="flex items-center gap-2 text-gray-600 text-xs">
+          {questionList.length} questions <Dot /> Estimated duration: 30 minutes
+        </p>
+        <Link href={"/create-interview/share"}>
+          <Button>Looks good - Continue</Button>
+        </Link>
+      </div>
     </section>
   );
 };

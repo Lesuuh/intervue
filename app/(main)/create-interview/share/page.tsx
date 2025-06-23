@@ -20,7 +20,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const InterviewLink = async () => {
+const InterviewLink = () => {
   const { interviewId, interviewDetails } = useInterviewStore();
   const [expiresAt, setExpiresAt] = useState<Date | null>(null);
 
@@ -37,7 +37,7 @@ const InterviewLink = async () => {
         const expiry = new Date(createdAt.getTime() + 30 * 24 * 60 * 60 * 1000);
         setExpiresAt(expiry);
       } else {
-        setExpiresAt(new Date()); // fallback
+        setExpiresAt(new Date());
       }
     };
 
@@ -65,7 +65,7 @@ const InterviewLink = async () => {
           </h1>
           <p className="text-sm text-gray-500">
             Share this link with your candidates to start the interview process
-            for the ${interviewDetails?.jobPosition} role
+            for the {interviewDetails?.jobPosition} role
           </p>
         </div>
 

@@ -13,16 +13,16 @@ const WelcomeContainer = () => {
           Great interview start with great questions
         </p>
       </div>
-      <div className="flex flex-col sm:flex-row space-x-4 items-center justify-between p-6 bg-gradient-to-r from-black to-slate-800 rounded-lg text-white">
+      <div className="flex flex-col sm:flex-row space-x-4 items-center justify-between p-10 bg-gradient-to-r from-black to-slate-800 rounded-lg text-white">
         <div>
-          <h3 className="text-lg font-semibold text-[1.4rem]">
+          <h3 className="font-semibold text-3xl mb-2">
             Create Your Next Interview
           </h3>
           <p className="text-sm text-slate-300">
             Generate AI-powered questions and share interview links in minutes
           </p>
         </div>
-        <Button className="flex cursor-pointer bg-secondary text-primary items-center gap-2">
+        <Button className="flex cursor-pointer bg-secondary mt-2 sm:mt-0 text-primary items-center gap-2">
           <Plus /> Create Interview
         </Button>
       </div>

@@ -17,18 +17,17 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   ];
 
   return (
-    <section className="max-w-3xl w-full flex flex-col my-20 justify-center items-center mx-auto p-5 bg-white">
-      <div className="w-full">
-        {/* Back navigation */}
-        <header className="flex items-center gap-3 mb-5">
-          <ArrowLeft
-            size={16}
-            onClick={() => router.back()}
-            className="cursor-pointer"
-          />
-          <p className="text-sm">Back to Dashboard</p>
-        </header>
-
+    <section className="max-w-3xl w-full flex flex-col my-20 justify-center items-center mx-auto p-5">
+      {/* Back navigation */}
+      <header className="flex w-full items-center gap-3 mb-5">
+        <ArrowLeft
+          size={16}
+          onClick={() => router.back()}
+          className="cursor-pointer"
+        />
+        <p className="text-sm">Back to Dashboard</p>
+      </header>
+      <div className="w-full bg-white rounded-lg shadow-md p-6">
         <main>
           {/* Step Progress Indicator */}
           <div className="flex items-center justify-between mb-5 gap-4">
@@ -65,10 +64,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
           {/* Child Page Content */}
           <div className="mb-6">{children}</div>
-
-          <div>
-            <Button>Generate Questions</Button>
-          </div>
         </main>
       </div>
     </section>

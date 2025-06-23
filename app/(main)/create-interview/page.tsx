@@ -1,17 +1,13 @@
 "use client";
 
-import { Progress } from "@/components/ui/progress";
-import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import FormContainer from "./_components/FormContainer";
 import { useState } from "react";
-import QuestionsList from "./_components/QuestionsList";
 import { toast } from "sonner";
-import InterviewLink from "./_components/InterviewLink";
 import { FormData } from "@/types";
 
 const CreateNewInterview = () => {
-
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     jobPosition: "",
     jobDescription: "",
@@ -23,26 +19,26 @@ const CreateNewInterview = () => {
   const onHandleInputChange = (field: string, value: string | string[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
-
+  const goToNextStep = () => {
+    if (
+      !formData.jobPosition ||
+      !formData.jobDescription ||
+      !formData.duration
+    ) {
+      toast.error("Please fill in all fields before proceeding.");
+      return;
+    } else if (!formData.interviewType.length) {
+      toast.error("Please select at least one interview type.");
+    } else {
+      router.push("/create-interview/questions");
+    }
+  };
   return (
     <div>
-
-
-      {/* content */}
-      {/* <main>
-        {step === 1 && (
-          <FormContainer
-            goToNextStep={goToNextStep}
-            onHandleInputChange={onHandleInputChange}
-          />
-        )}
-        {step === 2 && (
-          <QuestionsList formData={formData} onCreateLink={onCreateLink} />
-        )}
-        {step === 3 && interviewId && (
-          <InterviewLink interviewId={interviewId} formData={formData} />
-        )}
-      </main> */}
+      <FormContainer
+        goToNextStep={goToNextStep}
+        onHandleInputChange={onHandleInputChange}
+      />
     </div>
   );
 };

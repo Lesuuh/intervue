@@ -14,39 +14,39 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 
-const questionList = [
-  {
-    id: 1,
-    type: "Behavioural",
-    label: "Q1",
-    question: "Tell me about your experience with frontend development.",
-  },
-  {
-    id: 2,
-    type: "Technical",
-    label: "Q2",
-    question: "What is the virtual DOM and how does it work in React?",
-  },
-  {
-    id: 3,
-    type: "Technical",
-    label: "Q3",
-    question: "Can you explain the difference between let, const, and var?",
-  },
-  {
-    id: 4,
-    type: "Behavioural",
-    label: "Q4",
-    question: "Describe a time you overcame a challenge in a team project.",
-  },
-  {
-    id: 5,
-    type: "System Design",
-    label: "Q5",
-    question:
-      "How would you design a scalable component architecture in React?",
-  },
-];
+// const questionList = [
+//   {
+//     id: 1,
+//     type: "Behavioural",
+//     label: "Q1",
+//     question: "Tell me about your experience with frontend development.",
+//   },
+//   {
+//     id: 2,
+//     type: "Technical",
+//     label: "Q2",
+//     question: "What is the virtual DOM and how does it work in React?",
+//   },
+//   {
+//     id: 3,
+//     type: "Technical",
+//     label: "Q3",
+//     question: "Can you explain the difference between let, const, and var?",
+//   },
+//   {
+//     id: 4,
+//     type: "Behavioural",
+//     label: "Q4",
+//     question: "Describe a time you overcame a challenge in a team project.",
+//   },
+//   {
+//     id: 5,
+//     type: "System Design",
+//     label: "Q5",
+//     question:
+//       "How would you design a scalable component architecture in React?",
+//   },
+// ];
 
 // Type color mapping
 const typeColors: Record<string, string> = {
@@ -61,7 +61,8 @@ const Questions = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const formData = useFormStore((state) => state.formData);
   const user = useAuthStore((state) => state.user);
-  const setInterview_id = useInterviewStore((state) => state.setInterviewId);
+  const { setUsername, setInterviewDetails, setInterviewId } =
+    useInterviewStore();
 
   useEffect(() => {
     if (formData) {
@@ -124,7 +125,15 @@ const Questions = () => {
         ])
         .select();
 
-      setInterview_id(interview_id);
+      setInterviewId(interview_id);
+      setInterviewDetails({
+        jobPosition: formData?.jobPosition ?? "",
+        jobDescription: formData?.jobDescription ?? "",
+        duration: formData?.duration ?? "",
+        interviewType: formData?.interviewType ?? [],
+        questionsList: questions,
+      });
+      setUsername(user.fullname);
 
       if (error) {
         throw error;
@@ -142,13 +151,20 @@ const Questions = () => {
     }
   };
 
+  const handleContinue = () => {
+    onFinish();
+  };
+
   if (loading) {
     return (
-      <div className="flex justify-center items-center flex-col gap-2 w-full border border-primary rounded-sm p-5 bg-blue-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-4 border-blue-300 border-t-primary"></div>
-        <p className="text-xs font-bold">Hold on small, questions dey come</p>
-        <p className="text-primary">
-          Our AI is crafting personalized questions based on your inputs
+      <div className="flex justify-center items-center flex-col gap-3 w-full border border-blue-300 rounded-md p-6 bg-blue-50">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-4 border-blue-200 border-t-primary"></div>
+        <p className="text-sm font-semibold text-blue-800">
+          Preparing your interview questions...
+        </p>
+        <p className="text-xs text-gray-700 text-center max-w-sm">
+          Please hold on while our AI carefully generates questions tailored to
+          your inputs.
         </p>
       </div>
     );
@@ -156,13 +172,18 @@ const Questions = () => {
 
   if (error) {
     return (
-      <div className="flex justify-center items-center flex-col gap-2 w-full border border-red-500 rounded-sm p-5 bg-red-100">
-        <p className="text-red-500">
-          An Error occurred while generating questions, please try again
+      <div className="flex justify-center items-center flex-col gap-3 w-full border border-red-400 rounded-md p-6 bg-red-50">
+        <p className="text-sm font-semibold text-red-600">
+          Oops! Something went wrong.
+        </p>
+        <p className="text-xs text-gray-700 text-center max-w-sm">
+          We encountered an issue while generating your questions. Please try
+          again shortly.
         </p>
       </div>
     );
   }
+
   return (
     <section>
       <h2 className="text-2xl font-semibold mb-4">Review Questions</h2>
@@ -171,11 +192,11 @@ const Questions = () => {
       </p>
 
       <main className="space-y-4">
-        {questionList.map((q) => (
-          <div key={q.id} className="border p-4 rounded">
+        {questions.map((q, index) => (
+          <div key={index} className="border p-4 rounded">
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-2 mb-2">
-                <p className="text-gray-500">{q.label}</p>
+                <p className="text-gray-500">Q{index + 1}</p>
                 <span
                   className={`px-2 py-1 rounded-lg text-xs font-medium ${
                     typeColors[q.type] || "bg-gray-100 text-gray-500"
@@ -196,9 +217,10 @@ const Questions = () => {
       <Separator className="my-2 h-px w-full bg-gray-200 mt-10" />
       <div className="flex flex-col space-y-3 items-center justify-between mt-6">
         <p className="flex items-center gap-2 text-gray-600 text-xs">
-          {questionList.length} questions <Dot /> Estimated duration: 30 minutes
+          {questions.length} questions <Dot /> Estimated duration:{" "}
+          {formData?.duration} minutes
         </p>
-        <Link href={"/create-interview/share"}>
+        <Link href={"/create-interview/share"} onClick={handleContinue}>
           <Button>Looks good - Continue</Button>
         </Link>
       </div>

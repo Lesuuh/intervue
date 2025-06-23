@@ -2,6 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { supabase } from "@/services/supabase";
+import { useInterviewStore } from "@/store/useInterviewStore";
 import {
   ArrowLeft,
   Calendar,
@@ -15,18 +17,33 @@ import {
   TimerIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const InterviewLink = () => {
-  const mockInterviewId = "abc12345";
-  const formData = {
-    role: "Frontend Developer",
-    duration: 30,
-    questions: 10,
-    expiresAt: "Nov 20, 2025",
-  };
+const InterviewLink = async () => {
+  const { interviewId, interviewDetails } = useInterviewStore();
+  const [expiresAt, setExpiresAt] = useState<Date | null>(null);
 
-  const url = `https://yourdomain.com/${mockInterviewId}`;
+  useEffect(() => {
+    const fetchCreatedAt = async () => {
+      const { data, error } = await supabase
+        .from("Interviews")
+        .select("created_at")
+        .eq("id", interviewId)
+        .single();
+
+      if (data?.created_at) {
+        const createdAt = new Date(data.created_at);
+        const expiry = new Date(createdAt.getTime() + 30 * 24 * 60 * 60 * 1000);
+        setExpiresAt(expiry);
+      } else {
+        setExpiresAt(new Date()); // fallback
+      }
+    };
+
+    fetchCreatedAt();
+  }, [interviewId]);
+  const url = `http://localhost:3000/${interviewId}`;
 
   const onCopyLink = async () => {
     await navigator.clipboard.writeText(url);
@@ -48,6 +65,7 @@ const InterviewLink = () => {
           </h1>
           <p className="text-sm text-gray-500">
             Share this link with your candidates to start the interview process
+            for the ${interviewDetails?.jobPosition} role
           </p>
         </div>
 
@@ -72,16 +90,16 @@ const InterviewLink = () => {
           <div className="flex flex-wrap justify-between text-sm text-gray-500 gap-2">
             <div className="flex items-center gap-1">
               <TimerIcon size={16} />
-              <span>{formData.duration} Minutes</span>
+              <span>{interviewDetails?.duration} Minutes</span>
             </div>
             <div className="flex items-center gap-1">
               <List size={16} />
-              <span>{formData.questions} Questions</span>
+              <span>{interviewDetails?.questionsList.length} Questions</span>
             </div>
             <div className="flex items-center gap-1">
               <Calendar size={16} />
               <span className="text-red-500">
-                Expires: {formData.expiresAt}
+                Expires: {expiresAt ? expiresAt.toDateString() : "Unknown"}
               </span>
             </div>
           </div>

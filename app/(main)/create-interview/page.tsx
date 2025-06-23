@@ -5,31 +5,36 @@ import FormContainer from "./_components/FormContainer";
 import { useState } from "react";
 import { toast } from "sonner";
 import { FormData } from "@/types";
+import { useFormStore } from "@/store/useFormStore";
 
 const CreateNewInterview = () => {
   const router = useRouter();
-  const [formData, setFormData] = useState<FormData>({
+  const [formDetails, setFormDetails] = useState<FormData>({
     jobPosition: "",
     jobDescription: "",
     duration: "",
     interviewType: [],
   });
   const [interviewId, setInterviewId] = useState<string | null>(null);
+  const setFormData = useFormStore((state) => state.setFormData);
+  const formData = useFormStore((state) => state.formData);
 
   const onHandleInputChange = (field: string, value: string | string[]) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormDetails((prev) => ({ ...prev, [field]: value }));
   };
   const goToNextStep = () => {
     if (
-      !formData.jobPosition ||
-      !formData.jobDescription ||
-      !formData.duration
+      !formDetails.jobPosition ||
+      !formDetails.jobDescription ||
+      !formDetails.duration
     ) {
       toast.error("Please fill in all fields before proceeding.");
       return;
-    } else if (!formData.interviewType.length) {
+    } else if (!formDetails.interviewType.length) {
       toast.error("Please select at least one interview type.");
     } else {
+      setFormData(formDetails);
+      console.log(formData);
       router.push("/create-interview/questions");
     }
   };

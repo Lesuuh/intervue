@@ -11,8 +11,7 @@ import InterviewLink from "./_components/InterviewLink";
 import { FormData } from "@/types";
 
 const CreateNewInterview = () => {
-  const router = useRouter();
-  const [step, setStep] = useState(1);
+
   const [formData, setFormData] = useState<FormData>({
     jobPosition: "",
     jobDescription: "",
@@ -25,47 +24,12 @@ const CreateNewInterview = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const goToNextStep = () => {
-    if (
-      !formData.jobPosition ||
-      !formData.jobDescription ||
-      !formData.duration ||
-      formData.interviewType.length === 0
-    ) {
-      toast.error("Please fill all the fields", {
-        style: {
-          backgroundColor: "#fee2e2",
-          color: "#b91c1c",
-        },
-      });
-      return;
-    }
-    setStep((prev) => prev + 1);
-  };
-
-  const onCreateLink = (interview_id: string) => {
-    setInterviewId(interview_id);
-    setStep((prev) => prev + 1);
-  };
-
   return (
     <div>
-      {/* header */}
-      <header className="flex gap-2 items-center">
-        <ArrowLeft
-          onClick={() => router.back()}
-          className="w-5 cursor-pointer"
-        />
-        <h2 className="font-semibold">Create New Interview</h2>
-      </header>
 
-      {/* progress bar */}
-      <div className="my-5">
-        <Progress value={step * 33} />
-      </div>
 
       {/* content */}
-      <main>
+      {/* <main>
         {step === 1 && (
           <FormContainer
             goToNextStep={goToNextStep}
@@ -78,7 +42,7 @@ const CreateNewInterview = () => {
         {step === 3 && interviewId && (
           <InterviewLink interviewId={interviewId} formData={formData} />
         )}
-      </main>
+      </main> */}
     </div>
   );
 };

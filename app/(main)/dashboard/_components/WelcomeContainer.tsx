@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Plus } from "lucide-react";
+import Link from "next/link";
 
 const WelcomeContainer = () => {
   const user = useAuthStore((state) => state.user);
@@ -22,9 +23,11 @@ const WelcomeContainer = () => {
             Generate AI-powered questions and share interview links in minutes
           </p>
         </div>
-        <Button className="flex cursor-pointer bg-secondary mt-2 sm:mt-0 text-primary items-center gap-2">
-          <Plus /> Create Interview
-        </Button>
+        <Link href="/create-interview" className="w-full sm:w-auto">
+          <Button className="flex cursor-pointer bg-secondary mt-2 sm:mt-0 text-primary items-center gap-2">
+            <Plus /> Create Interview
+          </Button>
+        </Link>
       </div>
     </div>
   );

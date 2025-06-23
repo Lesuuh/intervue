@@ -33,8 +33,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-4">
-        <Loader className="h-6 w-6 animate-spin text-blue-600" />
+      <div className="flex items-center  min-h-screen justify-center p-4">
+        <Loader className="h-6 w-6 animate-spin text-black" />
       </div>
     );
   }
@@ -43,12 +43,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <SidebarProvider>
         <AppSidebar />
         <div className="w-full">
-          <div>
-            {/* <SidebarTrigger /> */}
-          </div>
-          <div className="w-full p-10">
-            <WelcomeContainer />
-          </div>
+          <div>{/* <SidebarTrigger /> */}</div>
+
           <div className="px-10 bg-gray-200">{children}</div>
         </div>
       </SidebarProvider>

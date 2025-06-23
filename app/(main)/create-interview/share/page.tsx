@@ -7,7 +7,6 @@ import {
   Calendar,
   Check,
   Copy,
-  Facebook,
   List,
   Mail,
   MessageCircleCode,

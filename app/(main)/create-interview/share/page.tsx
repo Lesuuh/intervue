@@ -43,7 +43,7 @@ const InterviewLink = async () => {
 
     fetchCreatedAt();
   }, [interviewId]);
-  const url = `http://localhost:3000/${interviewId}`;
+  const url = `http://localhost:3000/interview/${interviewId}`;
 
   const onCopyLink = async () => {
     await navigator.clipboard.writeText(url);

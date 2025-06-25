@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/services/supabase";
+import { useStartInterviewStore } from "@/store/useStartInterviewStore";
+import { InterviewDetailsProps } from "@/types";
 import { BrainCircuit, Loader, Loader2Icon, Video } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -15,6 +17,12 @@ const Interview = () => {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const router = useRouter();
+  const [interviewDetails, setInterviewDetails] =
+    useState<InterviewDetailsProps>();
+
+  const setCandidateEmail = useStartInterviewStore(
+    (state) => state.setUserEmail
+  );
 
   useEffect(() => {
     getInterviewDetails();
@@ -28,14 +36,19 @@ const Interview = () => {
         toast.error("Interview is missing or not found");
         return;
       }
-      const { data: interviewDetails, error } = await supabase
+      const { data, error } = await supabase
         .from("Interviews")
         .select("*")
-        .eq("interview_id", interview_id);
+        .eq("interview_id", interview_id)
+        .single();
 
-      if (error || !interviewDetails) {
+      if (error || !data) {
         toast.error("Failed to fetch interview details");
         return;
+      }
+
+      if (data) {
+        setInterviewDetails(data);
       }
     } catch (error) {
       setisLoading(false);
@@ -51,8 +64,8 @@ const Interview = () => {
       toast.error("Please enter all details to proceed");
     }
 
-    const { data, error } = await supabase
-      .from("Feedback")
+    const { error } = await supabase
+      .from("Candidates")
       .insert({
         email: email,
         fullName: fullName,
@@ -64,11 +77,13 @@ const Interview = () => {
     if (error) {
       console.log(error.message);
     }
-    console.log(data);
+
+    setCandidateEmail(email);
 
     router.push(`/interview/${interview_id}/start?name=${fullName}`);
   };
 
+  console.log(interviewDetails);
   if (isLoading) {
     return (
       <div className="flex items-center  min-h-screen justify-center p-4">
@@ -88,7 +103,7 @@ const Interview = () => {
       </p>
       <main className="p-6 rounded space-y-6 w-full bg-white max-w-md border-1 shadow-1">
         <h2 className="text-xl font-semibold text-center">
-          Start your interview
+          Start your {interviewDetails?.jobPosition} interview
         </h2>
         <div className="w-full flex flex-col items-start justify-center space-y-4">
           <div className="w-full">

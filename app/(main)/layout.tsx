@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/services/supabase";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Loader, Menu } from "lucide-react";
+import { Loader } from "lucide-react";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -38,14 +38,14 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     );
   }
   return (
-    <div className="w-full mx-auto max-w-[100rem]">
+    <div className="w-full mx-auto max-w-[100rem] bg-blue-50">
       <SidebarProvider>
         <AppSidebar />
         <div className="w-full">
           <div className="">
             <SidebarTrigger />
           </div>
-          <div className="px-4 bg-gray-200">{children}</div>
+          <div className="px-4 bg-blue-50">{children}</div>
         </div>
       </SidebarProvider>
     </div>

@@ -1,5 +1,3 @@
-import { title } from "process";
-
 const Summary = () => {
   const summaryData = [
     {
@@ -24,7 +22,7 @@ const Summary = () => {
         {summaryData.map((item, index) => (
           <div
             key={index}
-            className="flex flex-col justify-space-between gap-2 p-6 rounded border bg-white"
+            className="flex flex-col justify-space-between gap-2 p-6 rounded-lg border-1 bg-white"
           >
             <div>
               <h4 className="font-semibold">{item.title}</h4>

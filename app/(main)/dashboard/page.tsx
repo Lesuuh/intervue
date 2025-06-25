@@ -4,7 +4,7 @@ import WelcomeContainer from "./_components/WelcomeContainer";
 
 const Dashboard = () => {
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 my-10">
       <WelcomeContainer />
       <RecentInterviews />
       <Summary />

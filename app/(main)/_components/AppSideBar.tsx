@@ -1,6 +1,4 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -37,7 +35,7 @@ export function AppSidebar() {
     }
   };
   return (
-    <Sidebar>
+    <Sidebar className="">
       <SidebarHeader className="flex w-full ">
         <h1 className="font-semibold text-xl text-blue-800 ">
           <span className="text-primary">AI Interviews</span>

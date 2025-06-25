@@ -8,6 +8,7 @@ import { useInterviewStore } from "@/store/useInterviewStore";
 import { Question } from "@/types";
 import { Separator } from "@radix-ui/react-separator";
 import axios from "axios";
+import { addDays } from "date-fns";
 import { Dot, Pen, Trash2 } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -121,6 +122,8 @@ const Questions = () => {
             questionsList: JSON.stringify(questions),
             userEmail: user?.email,
             interview_id: interview_id,
+            createdAt: new Date().toISOString(),
+            expiresAt: addDays(new Date(), 30).toISOString(),
           },
         ])
         .select();
@@ -132,6 +135,8 @@ const Questions = () => {
         duration: formData?.duration ?? "",
         interviewType: formData?.interviewType ?? [],
         questionsList: questions,
+        createdAt: new Date().toISOString(),
+        expiresAt: addDays(new Date(), 30).toISOString(),
       });
       setUsername(user.fullname);
 

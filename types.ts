@@ -26,9 +26,12 @@ export interface InterviewLinkProps {
 }
 
 export interface InterviewDetailsProps {
+  interview_id: string;
   jobPosition: string;
   jobDescription: string;
   duration: string;
+  createdAt: string;
+  expiresAt: string;
   interviewType: string[];
   questionsList: Question[];
 }

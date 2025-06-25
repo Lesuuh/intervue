@@ -3,32 +3,17 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/services/supabase";
-import { useInterviewStore } from "@/store/useInterviewStore";
-import { InterviewDetailsProps } from "@/types";
-
-import {
-  BrainCircuit,
-  Loader,
-  Loader2Icon,
-  TimerIcon,
-  Video,
-} from "lucide-react";
-import Image from "next/image";
+import { BrainCircuit, Loader, Loader2Icon, Video } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const Interview = () => {
-  const interviewId = useParams();
-  const [interviewData, setInterviewData] =
-    useState<InterviewDetailsProps | null>(null);
+  const { interview_id } = useParams();
   const [isLoading, setisLoading] = useState<boolean>(false);
-  const [userName, setUserName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-  const setInterview = useInterviewStore((state) => state.setInterviewDetails);
-  const setInterviewId = useInterviewStore((state) => state.setInterviewId);
-  const setUsername = useInterviewStore((state) => state.setUsername);
-  const setEmail = useInterviewStore((state) => state.setUserEmail);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -38,7 +23,7 @@ const Interview = () => {
   const getInterviewDetails = async () => {
     setisLoading(true);
     try {
-      if (!interviewId?.interview_id) {
+      if (!interview_id) {
         setisLoading(false);
         toast.error("Interview is missing or not found");
         return;
@@ -46,16 +31,11 @@ const Interview = () => {
       const { data: interviewDetails, error } = await supabase
         .from("Interviews")
         .select("*")
-        .eq("interview_id", interviewId?.interview_id);
+        .eq("interview_id", interview_id);
 
       if (error || !interviewDetails) {
         toast.error("Failed to fetch interview details");
         return;
-      }
-
-      if (interviewDetails && interviewDetails.length > 0) {
-        setInterviewData(interviewDetails[0]);
-        setInterview(interviewDetails[0]);
       }
     } catch (error) {
       setisLoading(false);
@@ -66,17 +46,27 @@ const Interview = () => {
     }
   };
 
-  const onJoinInterview = () => {
-    if (!userName) {
-      toast.error("Please enter your name to join the interview");
+  const onJoinInterview = async () => {
+    if (!fullName || !email) {
+      toast.error("Please enter all details to proceed");
     }
 
-    setUsername(userName);
-    setEmail(userEmail);
-    setInterviewId(interviewId?.interview_id as string);
-    router.push(
-      `/interview/${interviewId?.interview_id}/start?name=${userName}`
-    );
+    const { data, error } = await supabase
+      .from("Feedback")
+      .insert({
+        email: email,
+        fullName: fullName,
+        interview_id: interview_id,
+        role: role,
+      })
+      .select();
+
+    if (error) {
+      console.log(error.message);
+    }
+    console.log(data);
+
+    router.push(`/interview/${interview_id}/start?name=${fullName}`);
   };
 
   if (isLoading) {
@@ -86,7 +76,6 @@ const Interview = () => {
       </div>
     );
   }
-
 
   return (
     <section className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-white items-center justify-center">
@@ -109,8 +98,8 @@ const Interview = () => {
             <Input
               type="text"
               name="name"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
               placeholder="e.g Jane Smith"
               id="name"
               className="my-1 py-3"
@@ -123,10 +112,24 @@ const Interview = () => {
             <Input
               type="text"
               name="email"
-              value={userEmail}
-              onChange={(e) => setUserEmail(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="e.g janesmith@gmail.com"
               id="email"
+              className="my-1 py-3"
+            />
+          </div>
+          <div className="w-full">
+            <label htmlFor="role" className="text-[.9rem]">
+              Role{" "}
+            </label>
+            <Input
+              type="text"
+              name="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              placeholder="e.g frontend developer"
+              id="role"
               className="my-1 py-3"
             />
           </div>
@@ -134,7 +137,7 @@ const Interview = () => {
 
         <Button
           onClick={onJoinInterview}
-          disabled={!userName}
+          disabled={!fullName}
           className="w-full py-3 cursor-pointer"
         >
           {isLoading ? (

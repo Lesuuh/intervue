@@ -1,81 +1,90 @@
 "use client";
 
-import { useInterviewStore } from "@/store/useInterviewStore";
 import {
   Bot,
   BotIcon,
   BrainCircuit,
   CircleStop,
-  CircleUserRoundIcon,
   Clock,
-  Mic,
-  Phone,
-  Timer,
   User,
 } from "lucide-react";
 import Vapi from "@vapi-ai/web";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import AlertConfirmation from "./_components/AlertConfirmation";
 import { toast } from "sonner";
 import axios from "axios";
 import { ConversationMessage } from "@/types";
 import { supabase } from "@/services/supabase";
 import { Button } from "@/components/ui/button";
+import { useParams, useRouter } from "next/navigation";
 
-const conversation: ConversationMessage[] = [
-  {
-    role: "system",
-    content:
-      "You are an AI voice assistant conducting interviews.\nYour job is to ask candidates provided interview questions, and assess their responses.\n\nBegin the conversation with a friendly introduction, setting a relaxed yet professional tone. Example:\n\"Hey there! Welcome to your backend interview. Let's get started with a few questions!\"\n\nAsk one question at a time and wait for the candidate's response before proceeding. Keep the questions clear and concise.\n\nQuestions: What is the virtual DOM in React, and how does it improve performance?,Explain the difference between server-side rendering and client-side rendering in Next.js.,How do you optimize performance in a large React application?,What are dynamic routes in Next.js and how do you implement them?,Can you describe a bug you encountered in React and how you solved it?,What is the purpose of the `useEffect` hook in React?,What strategies do you use to manage global state in React apps?,Have you used any component libraries with React or ...",
-  },
-  {
-    role: "assistant",
-    content: "Hi, Lizzie. How are you? Ready for your interview on back end?",
-  },
-  { role: "user", content: "Again, I thought I was doing front end." },
-  {
-    role: "assistant",
-    content:
-      "You're totally right. My bad. This one's all about front end, especially React and a bit of Next. Js. Thanks for catching that. Hey there. Welcome to your front end interview. Let's get started with a few questions. First up, what is the virtual DOM in React, and how does it improve performance?",
-  },
-  {
-    role: "user",
-    content:
-      "Visual dome is just like a light switch type of dome where which, uh, components where, um, it renders, but it doesn't touch the entire component.",
-  },
-  { role: "assistant", content: "You're on the right track." },
-  { role: "user", content: "Alright. Let's let's end the interview." },
-  {
-    role: "assistant",
-    content:
-      "No worries at all. Sometimes it's just not the day, and that's totally fine. You gave it a shot, and that's what counts. Thanks for chatting. Hope to see you crushing projects soon. Take care.",
-  },
-];
+// const conversation: ConversationMessage[] = [
+//   {
+//     role: "system",
+//     content:
+//       "You are an AI voice assistant conducting interviews.\nYour job is to ask candidates provided interview questions, and assess their responses.\n\nBegin the conversation with a friendly introduction, setting a relaxed yet professional tone. Example:\n\"Hey there! Welcome to your backend interview. Let's get started with a few questions!\"\n\nAsk one question at a time and wait for the candidate's response before proceeding. Keep the questions clear and concise.\n\nQuestions: What is the virtual DOM in React, and how does it improve performance?,Explain the difference between server-side rendering and client-side rendering in Next.js.,How do you optimize performance in a large React application?,What are dynamic routes in Next.js and how do you implement them?,Can you describe a bug you encountered in React and how you solved it?,What is the purpose of the `useEffect` hook in React?,What strategies do you use to manage global state in React apps?,Have you used any component libraries with React or ...",
+//   },
+//   {
+//     role: "assistant",
+//     content: "Hi, Lizzie. How are you? Ready for your interview on back end?",
+//   },
+//   { role: "user", content: "Again, I thought I was doing front end." },
+//   {
+//     role: "assistant",
+//     content:
+//       "You're totally right. My bad. This one's all about front end, especially React and a bit of Next. Js. Thanks for catching that. Hey there. Welcome to your front end interview. Let's get started with a few questions. First up, what is the virtual DOM in React, and how does it improve performance?",
+//   },
+//   {
+//     role: "user",
+//     content:
+//       "Visual dome is just like a light switch type of dome where which, uh, components where, um, it renders, but it doesn't touch the entire component.",
+//   },
+//   { role: "assistant", content: "You're on the right track." },
+//   { role: "user", content: "Alright. Let's let's end the interview." },
+//   {
+//     role: "assistant",
+//     content:
+//       "No worries at all. Sometimes it's just not the day, and that's totally fine. You gave it a shot, and that's what counts. Thanks for chatting. Hope to see you crushing projects soon. Take care.",
+//   },
+// ];
 
 const Start = () => {
+  const { interview_id } = useParams();
   const vapiRef = useRef<Vapi | null>(null);
-  const interviewDetails = useInterviewStore((state) => state.interviewDetails);
-  const username = useInterviewStore((state) => state.username);
-  const userEmail = useInterviewStore((state) => state.userEmail);
-  const [activeUser, setActiveUser] = useState(false);
   const [isAISpeaking, setIsAISpeaking] = useState(true);
-  // const [conversation, setConversation] = useState<ConversationMessage[]>();
+  const [conversation, setConversation] = useState<ConversationMessage[]>();
+  const [fullName, setFullName] = useState("");
+  const router = useRouter();
 
-  // initialize vapi instance
+  // get the candidate full name
+  const getCandidateName = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("Feedback")
+      .select("fullName")
+      .eq("interview_id", interview_id)
+      .single();
+    if (data) {
+      setFullName(data.fullName);
+    }
+    if (error) {
+      console.log(error.message);
+      toast.error(error.message);
+    }
+  }, [interview_id]);
+
   useEffect(() => {
+    // initialize vapi instance
     if (!vapiRef.current) {
       vapiRef.current = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_API_KEY!);
     }
-
     const vapi = vapiRef.current;
-
-    // handle then conversation message
+    // handle the conversation message and set to a state
     const handleMessage = (message: any) => {
       console.log("✅ Message received:", message);
       if (message?.conversation) {
         const convo = message.conversation;
         console.log("✅ Conversation string:", convo);
-        // setConversation(convo);
+        setConversation(convo);
       }
     };
 
@@ -86,14 +95,13 @@ const Start = () => {
 
     vapi.on("speech-start", () => {
       console.log("Speech has started");
-      setActiveUser(false);
+      setIsAISpeaking(true);
       toast.info("Ai is speaking");
     });
 
     vapi.on("speech-end", () => {
-      console.log("Speech has ended");
-      setActiveUser(true);
-      toast.info("You are speaking");
+      setIsAISpeaking(false);
+      toast.info("Your turn");
     });
 
     vapi.on("call-end", () => {
@@ -120,10 +128,11 @@ const Start = () => {
 
   // start interview
   useEffect(() => {
-    if (interviewDetails && vapiRef.current) {
+    getCandidateName();
+    if (fullName && vapiRef.current) {
       // startCall();
     }
-  }, [interviewDetails]);
+  }, [fullName, getCandidateName]);
 
   // start interview
   const startCall = async () => {
@@ -203,9 +212,11 @@ Ensure the interview remains focused on React.
     });
   };
 
-  // stop/end the call
+  // end the call
   const handleStopInterview = () => {
     vapiRef.current?.stop();
+    toast.success("Interview has ended");
+    router.push("/thankyou");
     generateFeedback();
   };
 
@@ -217,19 +228,19 @@ Ensure the interview remains focused on React.
   const generateFeedback = async () => {
     console.log("Sending conversation:", filteredConversation);
     try {
-      const result = await axios.post("/api/ai-feedback", filteredConversation);
+      const res = await axios.post("/api/ai-feedback", filteredConversation);
 
-      const { data, error } = await supabase
+      const result = res.data;
+
+      const { error } = await supabase
         .from("Feedback")
-        .insert([
-          {
-            userName: username,
-            userEmail: userEmail,
-            feedback: result.data,
-            recommendation: "yes",
-          },
-        ])
-        .select();
+        .update({ feedback: result, recommendation: true })
+        .eq("interview_id", interview_id);
+
+      if (error) {
+        console.log(error.message);
+        toast.error(error.message);
+      }
     } catch (error) {
       console.error("Error generating feedback:", error);
     }
@@ -250,7 +261,7 @@ Ensure the interview remains focused on React.
             <AlertConfirmation handleStopInterview={handleStopInterview}>
               <Button
                 onClick={handleStopInterview}
-                className="py-2 bg-red-500 hover:bg-red-600 rounded-lg text-white  font-semibold transition"
+                className="py-2 bg-red-500 hover:bg-red-600 rounded-lg text-white font-semibold transition"
               >
                 <CircleStop /> End Interview
               </Button>
@@ -338,48 +349,6 @@ Ensure the interview remains focused on React.
           </div>
         </div>
       </main>
-
-      {/* <main className="flex flex-col justify-center items-center max-w-2xl w-full p-4 bg-gray-100 rounded-lg">
-        <div className="flex items-center justify-between w-full">
-          <h2>AI Interview Session</h2>
-          <span className="flex items-center gap-2">
-            <Timer />
-            00:00:00
-          </span>
-        </div>
-        <div className="w-full grid grid-cols-1 my-5 sm:grid-cols-2 gap-3">
-          <div className="bg-white w-full h-60 rounded-lg flex justify-center items-center">
-            <div className="flex flex-col items-center relative">
-              {" "}
-              {!activeUser && (
-                <span className="absolute inset-0 rounded-full bg-blue-500 opacity-75 animate-ping" />
-              )}
-              <Bot />
-              <p>Recruiter</p>
-            </div>
-          </div>
-          <div className="bg-white w-full h-60 rounded-lg flex justify-center items-center">
-            <div className="flex flex-col items-center relative">
-              {" "}
-              {activeUser && (
-                <span className="absolute inset-0 rounded-full bg-blue-500 opacity-75 animate-ping" />
-              )}
-              <CircleUserRoundIcon />
-              {username}
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center justify-center gap-3">
-          <Mic size={14} className="bg-white p-2 rounded-full w-10 h-10" />
-          <AlertConfirmation handleStopInterview={() => handleStopInterview()}>
-            <Phone
-              size={14}
-              className="bg-red-500 p-2 rounded-full w-10 h-10 text-white"
-            />
-          </AlertConfirmation>
-        </div>
-        <p>Interview in progress</p>
-      </main> */}
     </section>
   );
 };

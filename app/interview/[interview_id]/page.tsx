@@ -87,16 +87,6 @@ const Interview = () => {
     );
   }
 
-  // if (notFound || !interviewData) {
-  //   return (
-  //     <section className="flex mx-auto w-full justify-center items-center bg-gray-100 min-h-screen ">
-  //       <main className="flex flex-col bg-white w-full max-w-xl px-20 py-4 rounded-lg items-center justify-center gap-4">
-  //         <h2>Interview not found</h2>
-  //         <p>Please check the interview link or contact support.</p>
-  //       </main>
-  //     </section>
-  //   );
-  // }
 
   return (
     <section className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-white items-center justify-center">

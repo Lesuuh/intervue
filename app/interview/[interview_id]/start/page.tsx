@@ -1,7 +1,18 @@
 "use client";
 
 import { useInterviewStore } from "@/store/useInterviewStore";
-import { Bot, CircleUserRoundIcon, Mic, Phone, Timer } from "lucide-react";
+import {
+  Bot,
+  BotIcon,
+  BrainCircuit,
+  CircleStop,
+  CircleUserRoundIcon,
+  Clock,
+  Mic,
+  Phone,
+  Timer,
+  User,
+} from "lucide-react";
 import Vapi from "@vapi-ai/web";
 import { useEffect, useRef, useState } from "react";
 import AlertConfirmation from "./_components/AlertConfirmation";
@@ -9,6 +20,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { ConversationMessage } from "@/types";
 import { supabase } from "@/services/supabase";
+import { Button } from "@/components/ui/button";
 
 const conversation: ConversationMessage[] = [
   {
@@ -46,6 +58,7 @@ const Start = () => {
   const username = useInterviewStore((state) => state.username);
   const userEmail = useInterviewStore((state) => state.userEmail);
   const [activeUser, setActiveUser] = useState(false);
+  const [isAISpeaking, setIsAISpeaking] = useState(true);
   // const [conversation, setConversation] = useState<ConversationMessage[]>();
 
   // initialize vapi instance
@@ -206,11 +219,15 @@ Ensure the interview remains focused on React.
     try {
       const result = await axios.post("/api/ai-feedback", filteredConversation);
 
-
       const { data, error } = await supabase
         .from("Feedback")
         .insert([
-          { userName: username, userEmail: userEmail, feedback: result.data,recommendation: "yes"  },
+          {
+            userName: username,
+            userEmail: userEmail,
+            feedback: result.data,
+            recommendation: "yes",
+          },
         ])
         .select();
     } catch (error) {
@@ -219,8 +236,110 @@ Ensure the interview remains focused on React.
   };
 
   return (
-    <section className="flex justify-center w-full mx-auto items-center min-h-screen">
-      <main className="flex flex-col justify-center items-center max-w-2xl w-full p-4 bg-gray-100 rounded-lg">
+    <section className="flex p-5 flex-col justify-center w-full bg-blue-50 mx-auto items-center min-h-screen">
+      <main className="flex flex-col w-full max-w-[100rem]">
+        <div className="bg-white rounded-lg w-full flex items-center justify-between p-6">
+          <h3 className="text-xl font-semibold">Voice Interview Session</h3>
+          <div className="flex space-x-3 items-center">
+            <Clock size={16} />
+            <p className="font-semibold text-lg">00:00</p>
+            <p className="bg-gray-300 px-2 py-1 text-xs font-semibold rounded-3xl">
+              In Progress
+            </p>
+            {/* End Interview Button */}
+            <AlertConfirmation handleStopInterview={handleStopInterview}>
+              <Button
+                onClick={handleStopInterview}
+                className="py-2 bg-red-500 hover:bg-red-600 rounded-lg text-white  font-semibold transition"
+              >
+                <CircleStop /> End Interview
+              </Button>
+            </AlertConfirmation>
+          </div>
+        </div>
+        <div className="flex flex-col lg:flex-row w-full justify-between lg:gap-5 items-center">
+          <div className="bg-white w-full my-10 rounded-2xl">
+            <div className="text-center py-4 flex items-center justify-center rounded-tl-xl rounded-tr-xl border-b bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+              <BotIcon size={24} />
+              <p className="text-2xl ml-2">Interviewer</p>
+            </div>
+            <div className="flex items-center w-full justify-center  h-[500px] relative">
+              <div className="relative">
+                {/* Pulse rings when AI is speaking */}
+                {isAISpeaking && (
+                  <>
+                    <div className="absolute inset-0 rounded-full bg-blue-400 opacity-20 animate-ping scale-110" />
+                    <div className="absolute inset-0 rounded-full bg-blue-400 opacity-30 animate-pulse scale-105" />
+                    <div className="absolute inset-0 rounded-full bg-blue-400 opacity-40 animate-ping scale-100 animation-delay-300" />
+                  </>
+                )}
+
+                {/* AI Avatar */}
+                <div
+                  className={`w-32 h-32 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    isAISpeaking
+                      ? "bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg scale-105"
+                      : "bg-gradient-to-br from-gray-400 to-gray-600 shadow-md"
+                  }`}
+                >
+                  <Bot className="h-16 w-16 text-white" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white w-full my-10 rounded-2xl ">
+            <div className="text-center  py-4 flex items-center justify-center rounded-tl-xl rounded-tr-xl border-b bg-gradient-to-r from-green-500 to-teal-600 text-white">
+              <User size={24} />
+              <p className="text-2xl ml-2">Candidate</p>
+            </div>
+            <div className=" flex items-center justify-center w-full h-[500px] relative">
+              <div className="relative ">
+                {/* Pulse rings when candidate is speaking */}
+                {isAISpeaking && (
+                  <>
+                    <div className="absolute inset-0 rounded-full bg-green-400 opacity-20 animate-ping scale-110" />
+                    <div className="absolute inset-0 rounded-full bg-green-400 opacity-30 animate-pulse scale-105" />
+                    <div className="absolute inset-0 rounded-full bg-green-400 opacity-40 animate-ping scale-100 animation-delay-300" />
+                  </>
+                )}
+
+                {/* Candidate Avatar */}
+                <div
+                  className={`w-32 h-32 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    isAISpeaking
+                      ? "bg-gradient-to-br from-green-500 to-teal-600 shadow-lg scale-105"
+                      : "bg-gradient-to-br from-gray-400 to-gray-600 shadow-md"
+                  }`}
+                >
+                  <User className="h-16 w-16 text-white" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="w-full flex justify-center mt-4">
+          <div className="bg-blue-100 border border-blue-300 rounded-lg p-4 max-w-xl w-full mb-4 shadow-sm">
+            <h4 className="font-semibold text-blue-700 mb-2 flex items-center gap-2">
+              <BrainCircuit size={18} /> Interview Tips
+            </h4>
+            <ul className="list-disc pl-5 text-sm text-blue-900 space-y-1">
+              <li>
+                Relax and answer each question to the best of your ability.
+              </li>
+              <li>Speak clearly and take your time before responding.</li>
+              <li>
+                If you don’t know an answer, it’s okay to say so—just try your
+                best!
+              </li>
+              <li>Ask for clarification if you don’t understand a question.</li>
+              <li>Stay positive and confident throughout the interview.</li>
+            </ul>
+          </div>
+        </div>
+      </main>
+
+      {/* <main className="flex flex-col justify-center items-center max-w-2xl w-full p-4 bg-gray-100 rounded-lg">
         <div className="flex items-center justify-between w-full">
           <h2>AI Interview Session</h2>
           <span className="flex items-center gap-2">
@@ -260,7 +379,7 @@ Ensure the interview remains focused on React.
           </AlertConfirmation>
         </div>
         <p>Interview in progress</p>
-      </main>
+      </main> */}
     </section>
   );
 };

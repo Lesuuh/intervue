@@ -22,7 +22,7 @@ const AlertConfirmation = ({
 }: AlertConfirmationProps) => {
   return (
     <AlertDialog>
-      <AlertDialogTrigger>{children}</AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -32,7 +32,10 @@ const AlertConfirmation = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => handleStopInterview()}>
+          <AlertDialogAction
+            className="bg-red-500 hover:bg-red-500"
+            onClick={() => handleStopInterview()}
+          >
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>

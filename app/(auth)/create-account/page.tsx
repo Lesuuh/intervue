@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSignUp } from "@/hooks/useAuth";
 import { supabase } from "@/services/supabase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,25 +13,14 @@ const CreateAccount = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter()
+  const router = useRouter();
+
+  const createAccount = useSignUp();
 
   async function signUpNewUser() {
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
+    const result = await createAccount.mutateAsync({ email, password });
 
-    if(data){
-      router.push("/login")
-    }
-    if (error) {
-      console.error("Full error:", error);
-      toast.error(error.message || "Something went wrong");
-      return;
-    }
-
-    if (data.user) {
-      toast.success("Account created Successfully!");
+    if (result.user) {
       const { error } = await supabase.from("Users").insert([
         {
           email: email,
@@ -38,6 +28,8 @@ const CreateAccount = () => {
           credits: 0,
         },
       ]);
+      toast.success("Account created Successfully!");
+      router.push("/login");
 
       if (error) {
         console.error("Full error:", error);

@@ -1,50 +1,54 @@
 import { supabase } from "@/services/supabase";
-import { AuthError, Session, User } from "@supabase/supabase-js";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-type LoginVariables = {
+type SignUpPayload = {
   email: string;
   password: string;
 };
 
-type LoginResult = {
-  user: User | null;
-  session: Session | null;
-};
+export function useSignUp() {
+  return useMutation({
+    mutationFn: async ({ email, password }: SignUpPayload) => {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
 
-type CreateAccountTypes = {
-  email: string;
-  password: string;
-  name: string;
-};
+      if (error) throw error;
+      return data;
+    },
+  });
+}
 
-export function useAuth() {
-  const loginMutation = useMutation<LoginResult, AuthError, LoginVariables>(
-    async ({ email, password }: LoginVariables) => {
+export function useLogin() {
+  return useMutation({
+    mutationFn: async ({ email, password }: SignUpPayload) => {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       if (error) throw error;
-      return {
-        user: data.user,
-        session: data.session,
-      };
-    }
-  );
-
-  const createAccountMutation = useMutation<AuthError, CreateAccountTypes>(
-    async ({ email, password }: CreateAccountTypes) => {
-      const { data, error } = await supabase.auth.signUp({ email, password });
-      if (error) throw error;
-      return data;
-    }
-  );
-
-  const logoutMutation = useMutation(async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+      return { data, error };
+    },
   });
+}
 
-  return { loginMutation, createAccountMutation, logoutMutation };
+export function useLogout() {
+  return useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    },
+  });
+}
+
+export function useCurrentUser() {
+  return useQuery({
+    queryKey: ["currentUser"],
+    queryFn: async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) throw error;
+      return data.user;
+    },
+  });
 }

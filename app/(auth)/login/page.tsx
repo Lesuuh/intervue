@@ -1,8 +1,9 @@
 "use client";
 
+import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { supabase } from "@/services/supabase";
+import { useLogin } from "@/hooks/useAuth";
 import { useAuthStore } from "@/store/useAuthStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,19 +16,25 @@ const Login = () => {
   const setUser = useAuthStore((state) => state.setUser);
   const router = useRouter();
 
+  const login = useLogin();
+  const { isPending } = login;
+
   async function signInWithEmail() {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
+      const { data, error } = await login.mutateAsync({
+        email,
+        password,
       });
       if (error) {
         console.error("Full error:", error);
-        toast.error(error.message || "Something went wrong");
+        toast.error(
+          (error as { message?: string })?.message || "Something went wrong"
+        );
         return;
       }
-      setUser(data);
+      setUser(data.user);
       router.push("/dashboard");
+      toast.success("Login Successful");
     } catch (error) {
       console.log(error);
     }
@@ -58,8 +65,13 @@ const Login = () => {
           />
         </div>
         <div className="w-full flex justify-center mt-2">
-          <Button onClick={signInWithEmail} className="w-full cursor-pointer">
-            Login
+          <Button
+            onClick={signInWithEmail}
+            className="w-full cursor-pointer"
+            disabled={isPending}
+          >
+            {isPending ? <Loader  className="bg-white" /> : null}
+            {isPending ? "Logging in...." : "Login"}
           </Button>
         </div>
         <p className="text-[.8rem] text-gray-500 py-2 cursor-pointer">

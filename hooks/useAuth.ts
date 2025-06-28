@@ -42,13 +42,13 @@ export function useLogout() {
   });
 }
 
-export function useCurrentUser() {
+export function useCurrentUserSession() {
   return useQuery({
-    queryKey: ["currentUser"],
+    queryKey: ["currentUserSession"],
     queryFn: async () => {
-      const { data, error } = await supabase.auth.getUser();
+      const { data, error } = await supabase.auth.getSession();
       if (error) throw error;
-      return data.user;
+      return data.session;
     },
   });
 }

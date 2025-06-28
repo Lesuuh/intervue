@@ -41,9 +41,9 @@ const Login = () => {
   }
 
   return (
-    <div className="flex flex-col w-full items-center justify-center h-screen bg-gray-100">
+    <div className="flex flex-col w-full items-center justify-center h-screen bg-blue-50">
       <div className="w-full max-w-md p-6 rounded-sm border flex flex-col items-center ">
-        <h2 className="text-2xl font-bold">Welcome to AI Cruiter</h2>
+        <h2 className="text-2xl font-bold">Welcome to Intervue</h2>
         <p>Login</p>
 
         <div className="w-full flex flex-col gap-3 my-5">
@@ -67,10 +67,10 @@ const Login = () => {
         <div className="w-full flex justify-center mt-2">
           <Button
             onClick={signInWithEmail}
-            className="w-full cursor-pointer"
+            className="w-full cursor-pointer py-3"
             disabled={isPending}
           >
-            {isPending ? <Loader  className="bg-white" /> : null}
+            {isPending ? <Loader className="bg-white" /> : null}
             {isPending ? "Logging in...." : "Login"}
           </Button>
         </div>

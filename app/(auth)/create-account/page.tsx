@@ -39,7 +39,7 @@ const CreateAccount = () => {
     }
   }
   return (
-    <div className="flex flex-col w-full items-center justify-center h-screen bg-gray-100">
+    <div className="flex flex-col w-full items-center justify-center h-screen bg-blue-50">
       <div className="w-full max-w-sm p-6 rounded-sm border flex flex-col items-center ">
         <h2 className="text-2xl font-bold">Welcome to AI Cruiter</h2>
         <p>Create Account</p>
@@ -71,7 +71,7 @@ const CreateAccount = () => {
           />
         </div>
         <div className="w-full flex justify-center mt-2">
-          <Button className="w-full" onClick={signUpNewUser}>
+          <Button className="w-full py-2" onClick={signUpNewUser}>
             Create Account
           </Button>
         </div>

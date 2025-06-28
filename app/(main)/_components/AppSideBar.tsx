@@ -8,6 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { SidebarOptions } from "@/services/constants";
 import { supabase } from "@/services/supabase";
@@ -21,7 +22,7 @@ import { toast } from "sonner";
 export function AppSidebar() {
   const path = usePathname();
   const router = useRouter();
-  const clearUser = useAuthStore((state)=> state.clearUser)
+  const clearUser = useAuthStore((state) => state.clearUser);
 
   // logout function
   const handleLogout = async () => {
@@ -29,7 +30,7 @@ export function AppSidebar() {
     if (error) {
       toast.error("Error logging out");
     } else {
-      clearUser()
+      clearUser();
       toast.success("Logout successful");
       router.push("/login");
     }
@@ -37,11 +38,11 @@ export function AppSidebar() {
   return (
     <Sidebar className="">
       <SidebarHeader className="flex w-full ">
-        <h1 className="font-semibold text-xl text-blue-800 ">
-          <span className="text-primary">AI Interviews</span>
-        </h1>
-      <Separator className="my-2 h-px w-full bg-gray-200" />
-  
+        <h1 className="font-semibold text-xl flex justify-between text-blue-800 ">
+          <span className="text-primary text-2xl">Intervue</span>
+          <SidebarTrigger />
+        </h1>{" "}
+        <Separator className="my-2 h-px w-full bg-gray-200" />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -51,7 +52,9 @@ export function AppSidebar() {
                 <SidebarMenuItem key={index} className="p-1">
                   <SidebarMenuButton
                     asChild
-                    className={`text-gray-700 ${path == option.path && "bg-gray-200 hover:bg-gray-100 "}`}
+                    className={`text-gray-700 ${
+                      path == option.path && "bg-gray-200 hover:bg-gray-100 "
+                    }`}
                   >
                     <Link href={option.path}>
                       <option.icon
@@ -75,17 +78,23 @@ export function AppSidebar() {
       </SidebarContent>
       <Separator className="my-2 h-px w-full bg-gray-200" />
       <SidebarFooter>
-       <div className="flex items-center gap-2">
-        <p className="bg-gray-300 w-10 h-10 rounded-full justify-center items-center flex">L</p>
-        <div>
-          <p>Lesuuh</p>
-          <p className="text-gray-700">lesuuh01@gmail.com</p>
+        <div className="flex items-center gap-2">
+          <p className="bg-gray-300 w-10 h-10 rounded-full justify-center items-center flex">
+            L
+          </p>
+          <div>
+            <p>Lesuuh</p>
+            <p className="text-gray-700">lesuuh01@gmail.com</p>
+          </div>
         </div>
-       </div>
-       <div>
-        <button onClick={handleLogout} className="text-center p-2 w-full flex items-center gap-2 font-semibold text-[1rem] text-gray-800"><LogOut size={16}/>  Logout</button>
-       </div>
- 
+        <div>
+          <button
+            onClick={handleLogout}
+            className="text-center p-2 w-full flex items-center gap-2 font-semibold text-[1rem] text-gray-800"
+          >
+            <LogOut size={16} /> Logout
+          </button>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

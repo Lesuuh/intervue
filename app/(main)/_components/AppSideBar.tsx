@@ -14,7 +14,7 @@ import { SidebarOptions } from "@/services/constants";
 import { supabase } from "@/services/supabase";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Separator } from "@radix-ui/react-separator";
-import { LogOut } from "lucide-react";
+import { LogOut, PanelLeftIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -40,7 +40,9 @@ export function AppSidebar() {
       <SidebarHeader className="flex w-full ">
         <h1 className="font-semibold text-xl flex justify-between text-blue-800 ">
           <span className="text-primary text-2xl">Intervue</span>
-          <SidebarTrigger />
+          <SidebarTrigger>
+            <PanelLeftIcon />
+          </SidebarTrigger>
         </h1>{" "}
         <Separator className="my-2 h-px w-full bg-gray-200" />
       </SidebarHeader>

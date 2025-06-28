@@ -1,10 +1,10 @@
 "use client";
 
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./_components/AppSideBar";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader } from "lucide-react";
+import { Loader, Menu } from "lucide-react";
 import { useCurrentUserSession } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { supabase } from "@/services/supabase";
@@ -50,6 +50,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <SidebarProvider>
         <AppSidebar />
         <div className="w-full">
+          <SidebarTrigger side="left" />
+          <SidebarTrigger>
+            <Menu size={48} />
+          </SidebarTrigger>
           <div className="px-4 bg-blue-50">{children}</div>
         </div>
       </SidebarProvider>

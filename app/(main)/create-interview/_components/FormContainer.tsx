@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,6 +12,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { InterviewTypes } from "@/services/constants";
 import { ArrowRight } from "lucide-react";
+
 import { useEffect, useState } from "react";
 
 interface FormContainerProps {
@@ -41,7 +44,7 @@ const FormContainer = ({
         <h2 className="text-sm font-medium">Job Position</h2>
         <Input
           placeholder="e.g Full Stack Developer"
-          className="mt-2"
+          className="mt-2 py-3"
           onChange={(e) => onHandleInputChange("jobPosition", e.target.value)}
         />
       </div>
@@ -94,7 +97,11 @@ const FormContainer = ({
         </div>
       </div>
       <div className="mt-5 flex justify-end">
-        <Button onClick={() => goToNextStep()}>
+        <Button
+          onClick={() => {
+            goToNextStep();
+          }}
+        >
           Generate Question <ArrowRight />
         </Button>
       </div>

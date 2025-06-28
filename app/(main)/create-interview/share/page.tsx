@@ -32,6 +32,10 @@ const InterviewLink = () => {
         .eq("id", interviewId)
         .single();
 
+      // if (error) {
+      //   toast.error(error);
+      // }
+
       if (data?.created_at) {
         const createdAt = new Date(data.created_at);
         const expiry = new Date(createdAt.getTime() + 30 * 24 * 60 * 60 * 1000);

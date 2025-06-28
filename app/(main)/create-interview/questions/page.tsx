@@ -1,19 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/services/supabase";
+import { useCreateInterview } from "@/hooks/useCreateInterview";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useFormStore } from "@/store/useFormStore";
-import { useInterviewStore } from "@/store/useInterviewStore";
 import { Question } from "@/types";
 import { Separator } from "@radix-ui/react-separator";
 import axios from "axios";
-import { addDays } from "date-fns";
 import { Dot, Pen, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { v4 as uuidv4 } from "uuid";
 
 // const questionList = [
 //   {
@@ -62,8 +60,7 @@ const Questions = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const formData = useFormStore((state) => state.formData);
   const user = useAuthStore((state) => state.user);
-  const { setUsername, setInterviewDetails, setInterviewId } =
-    useInterviewStore();
+  const router = useRouter();
 
   useEffect(() => {
     if (formData) {
@@ -111,48 +108,27 @@ const Questions = () => {
   };
 
   // then send the question to supabase along with the interview_id
+  const createInterview = useCreateInterview();
   const onFinish = async () => {
-    const interview_id = uuidv4();
     try {
-      const { data, error } = await supabase
-        .from("Interviews")
-        .insert([
-          {
-            ...formData,
-            questionsList: JSON.stringify(questions),
-            userEmail: user?.email,
-            interview_id: interview_id,
-            createdAt: new Date().toISOString(),
-            expiresAt: addDays(new Date(), 30).toISOString(),
-          },
-        ])
-        .select();
-
-      setInterviewId(interview_id);
-      setInterviewDetails({
-        jobPosition: formData?.jobPosition ?? "",
-        jobDescription: formData?.jobDescription ?? "",
-        duration: formData?.duration ?? "",
-        interviewType: formData?.interviewType ?? [],
-        questionsList: questions,
-        createdAt: new Date().toISOString(),
-        expiresAt: addDays(new Date(), 30).toISOString(),
-      });
-      setUsername(user.fullname);
-
-      if (error) {
-        throw error;
+      if (!formData || !user) {
+        toast.error("Something went wrong");
+        router.push("/login");
+        return;
       }
-
+      const data = await createInterview.mutateAsync({
+        formData,
+        questions,
+        userEmail: user?.email,
+      });
+      router.push("/create-interview/share");
       toast.success("Interview Questions generated successfully");
       console.log(data);
     } catch (error) {
-      if (error instanceof Error) {
-        toast.error(`Failed to save interview: ${error.message}`);
-      } else {
-        toast.error("Failed to save interview: Unknown error");
-      }
       console.error(error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
     }
   };
 

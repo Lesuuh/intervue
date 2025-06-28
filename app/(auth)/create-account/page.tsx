@@ -51,7 +51,7 @@ const CreateAccount = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="John Doe"
-            className="px-2 py-1 w-full"
+            className="px-2 py-3 w-full"
           />
           <Input
             type="email"
@@ -59,7 +59,7 @@ const CreateAccount = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="johndoe@yourmail.com"
-            className="px-2 py-1 w-full"
+            className="px-2 py-3 w-full"
           />
           <Input
             type="password"
@@ -67,7 +67,7 @@ const CreateAccount = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="......"
-            className="px-2 py-1 w-full placeholder:text-[2rem]"
+            className="px-2 py-3 w-full placeholder:text-[2rem]"
           />
         </div>
         <div className="w-full flex justify-center mt-2">

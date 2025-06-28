@@ -16,8 +16,6 @@ const CreateNewInterview = () => {
     interviewType: [],
   });
 
-  const [interviewId, setInterviewId] = useState<string | null>(null);
-
   const setFormData = useFormStore((state) => state.setFormData);
   const formData = useFormStore((state) => state.formData);
 

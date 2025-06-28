@@ -6,10 +6,14 @@ import Link from "next/link";
 
 const WelcomeContainer = () => {
   const user = useAuthStore((state) => state.user);
+  console.log(user);
+
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="font-semibold text-[2rem] ">Welcome back, lesuuh</h2>
+        <h2 className="font-semibold text-[2rem] ">
+          Welcome back, {user?.name || "Loading..."}
+        </h2>
         <p className="text-gray-600 flex items-center gap-2">
           <Sparkles size={15} className="text-amber-500" /> Great interview
           start with great questions

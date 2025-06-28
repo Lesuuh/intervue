@@ -7,16 +7,32 @@ import { useRouter } from "next/navigation";
 import { Loader } from "lucide-react";
 import { useCurrentUserSession } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { supabase } from "@/services/supabase";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const { data: session, isLoading, error } = useCurrentUserSession();
 
+  const getUserDetails = async () => {
+    if (session) {
+      const { data } = await supabase
+        .from("Users")
+        .select("*")
+        .eq("email", session.user.email)
+        .single();
+      useAuthStore.getState().setUser(data);
+    }
+  };
+
   useEffect(() => {
     if (!session) {
       router.push("/login");
     }
+
+    getUserDetails();
     router.push("/dashboard");
+
     if (error) {
       toast.error(error.message);
     }

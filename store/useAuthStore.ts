@@ -1,9 +1,16 @@
 import { create } from "zustand";
-import { User } from "@supabase/supabase-js";
+
+type UserProp = {
+  id: string;
+  created_at: string;
+  name: string;
+  credits: number;
+  email: string;
+};
 
 interface UserState {
-  user: User | null;
-  setUser: (user: User | null) => void;
+  user: UserProp | null;
+  setUser: (user: UserProp | null) => void;
   clearUser: () => void;
 }
 

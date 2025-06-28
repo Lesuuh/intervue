@@ -1,9 +1,11 @@
 "use client";
 
+import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/services/supabase";
 import { useInterviewStore } from "@/store/useInterviewStore";
+import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
   Calendar,
@@ -17,42 +19,43 @@ import {
   TimerIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const InterviewLink = () => {
-  const { interviewId, interviewDetails } = useInterviewStore();
-  const [expiresAt, setExpiresAt] = useState<Date | null>(null);
+  const { interviewId } = useInterviewStore();
 
-  useEffect(() => {
-    const fetchCreatedAt = async () => {
+  const url = `http://localhost:3000/interview/${interviewId}`;
+
+  const { data: interviewData, isLoading } = useQuery({
+    queryKey: ["interview-details"],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from("Interviews")
-        .select("created_at")
+        .select("*")
         .eq("id", interviewId)
         .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!interviewId,
+  });
 
-      // if (error) {
-      //   toast.error(error);
-      // }
-
-      if (data?.created_at) {
-        const createdAt = new Date(data.created_at);
-        const expiry = new Date(createdAt.getTime() + 30 * 24 * 60 * 60 * 1000);
-        setExpiresAt(expiry);
-      } else {
-        setExpiresAt(new Date());
-      }
-    };
-
-    fetchCreatedAt();
-  }, [interviewId]);
-  const url = `http://localhost:3000/interview/${interviewId}`;
+  const expiresAt = interviewData?.expiresAt
+    ? new Date(interviewData.expiresAt)
+    : "In 30 days";
 
   const onCopyLink = async () => {
     await navigator.clipboard.writeText(url);
     toast.success("Interview link copied to clipboard");
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-96 flex items-center justify-center">
+        <Loader className="text-black" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full px-4 md:px-0">
@@ -69,7 +72,7 @@ const InterviewLink = () => {
           </h1>
           <p className="text-sm text-gray-500">
             Share this link with your candidates to start the interview process
-            for the {interviewDetails?.jobPosition} role
+            for the {interviewData?.jobPosition} role
           </p>
         </div>
 
@@ -94,16 +97,21 @@ const InterviewLink = () => {
           <div className="flex flex-wrap justify-between text-sm text-gray-500 gap-2">
             <div className="flex items-center gap-1">
               <TimerIcon size={16} />
-              <span>{interviewDetails?.duration} Minutes</span>
+              <span>{interviewData?.duration} Minutes</span>
             </div>
             <div className="flex items-center gap-1">
               <List size={16} />
-              <span>{interviewDetails?.questionsList.length} Questions</span>
+              <span>{interviewData?.questionsList.length} Questions</span>
             </div>
             <div className="flex items-center gap-1">
               <Calendar size={16} />
               <span className="text-red-500">
-                Expires: {expiresAt ? expiresAt.toDateString() : "Unknown"}
+                Expires:{" "}
+                {expiresAt
+                  ? typeof expiresAt === "string"
+                    ? expiresAt
+                    : expiresAt.toLocaleDateString()
+                  : "Unknown"}
               </span>
             </div>
           </div>

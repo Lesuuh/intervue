@@ -1,4 +1,5 @@
 import { supabase } from "@/services/supabase";
+import { useInterviewStore } from "@/store/useInterviewStore";
 import { FormData, Question } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import { addDays } from "date-fns";
@@ -11,6 +12,7 @@ interface CreateInterviewProps {
 }
 
 export function useCreateInterview() {
+  const setInterviewId = useInterviewStore((state) => state.setInterviewId);
   return useMutation({
     mutationFn: async ({
       formData,
@@ -31,6 +33,7 @@ export function useCreateInterview() {
           },
         ])
         .select("*");
+      setInterviewId(interview_id);
       if (error) throw error;
       return data;
     },

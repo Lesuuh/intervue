@@ -50,7 +50,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <SidebarProvider>
         <AppSidebar />
         <div className="w-full">
-          <SidebarTrigger side="left" />
           <SidebarTrigger>
             <Menu size={48} />
           </SidebarTrigger>

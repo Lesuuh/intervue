@@ -4,7 +4,6 @@ import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLogin } from "@/hooks/useAuth";
-import { useAuthStore } from "@/store/useAuthStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -13,7 +12,6 @@ import { toast } from "sonner";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const setUser = useAuthStore((state) => state.setUser);
   const router = useRouter();
 
   const login = useLogin();
@@ -32,7 +30,6 @@ const Login = () => {
         );
         return;
       }
-      setUser(data.user);
       router.push("/dashboard");
       toast.success("Login Successful");
     } catch (error) {

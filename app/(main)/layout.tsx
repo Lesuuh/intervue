@@ -26,17 +26,16 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    if (isLoading) return;
     if (!session) {
       router.push("/login");
+      return;
     }
-
     getUserDetails();
-    router.push("/dashboard");
-
     if (error) {
       toast.error(error.message);
     }
-  }, [session, router, error]);
+  }, [session, router, error, isLoading]);
 
   if (isLoading) {
     return (
@@ -50,9 +49,11 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <SidebarProvider>
         <AppSidebar />
         <div className="w-full">
-          <SidebarTrigger>
-            <Menu size={48} />
-          </SidebarTrigger>
+          <div className="md:hidden">
+            <SidebarTrigger>
+              <Menu size={48} />
+            </SidebarTrigger>
+          </div>
           <div className="px-4 bg-blue-50">{children}</div>
         </div>
       </SidebarProvider>

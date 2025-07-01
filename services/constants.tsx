@@ -30,7 +30,7 @@ export const SidebarOptions = [
   {
     name: "Billings",
     icon: WalletCards,
-    path: "/billing",
+    path: "/billings",
   },
   {
     name: "Settings",

@@ -43,7 +43,7 @@ const AllInterviews = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center min-h-screen items-center">
-        <Loader />
+        <Loader className="text-black" />
       </div>
     );
   }

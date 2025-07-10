@@ -1,15 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Briefcase, Building2, Check, Gem, Rocket } from "lucide-react";
+import { ArrowRight, Building, Check, Crown, Zap } from "lucide-react";
 
 const Billings = () => {
   const stats = [
@@ -21,7 +14,7 @@ const Billings = () => {
     {
       value: 12,
       title: "Total inteviews created",
-      text: "since joining",
+      text: "Since joining",
     },
     {
       value: 7,
@@ -30,9 +23,6 @@ const Billings = () => {
     },
   ];
 
-  // const [currentPlan, setCurrentPlan] = useState("Free");
-
-  // plans
   const plans = [
     {
       name: "Free",
@@ -53,7 +43,7 @@ const Billings = () => {
       ],
       popular: false,
       current: true,
-      icon: <Gem className="inline-block text-green-500" />, // Example icon
+      icon: <Zap className="h-5 w-5 text-gray-600 mr-2" />,
       buttonText: "Current Plan",
     },
     {
@@ -74,7 +64,7 @@ const Billings = () => {
       limitations: [],
       popular: true,
       current: false,
-      icon: <Rocket className="inline-block text-blue-500" />,
+      icon: <Crown className="h-5 w-5 text-yellow-500 mr-2" />,
       buttonText: "Upgrade to Pro",
     },
     {
@@ -98,7 +88,7 @@ const Billings = () => {
       limitations: [],
       popular: false,
       current: false,
-      icon: <Briefcase className="inline-block text-purple-500" />,
+      icon: <Building className="h-5 w-5 text-blue-600 mr-2" />,
       buttonText: "Upgrade to Business",
     },
     {
@@ -124,10 +114,16 @@ const Billings = () => {
       limitations: [],
       popular: false,
       current: false,
-      icon: <Building2 className="inline-block text-orange-500" />,
+      icon: <Building className="h-5 w-5 text-purple-600 mr-2" />,
       buttonText: "Contact Sales",
     },
   ];
+
+  const handleUpgrade = (planName: string) => {
+    console.log(`Upgrade to ${planName}`);
+    // your upgrade logic
+  };
+
   return (
     <section>
       <header className="my-6">
@@ -151,11 +147,11 @@ const Billings = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 w-full items-center justify-between mb-10">
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="bg-gray-50 min-w-3xs border p-4 rounded-lg"
+                className="bg-gray-50 min-w-3xs w-full border p-4 rounded-lg"
               >
                 <h2 className="text-2xl font-semibold">{stat.value}</h2>
                 <p className="text-sm font-light text-gray-500">{stat.title}</p>
@@ -171,36 +167,82 @@ const Billings = () => {
             </p>
           </div>
         </div>
-        {/* cards */}
-        <div className="grid w-full  grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-end my-10">
-          {plans.map((plan, idx) => (
-            <Card
-              key={idx}
-              className={`h-auto border ${
-                plan.name === "Free" ? "border-green-500" : ""
+{/* pricing */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 my-20">
+          {plans.map((plan) => (
+            <div
+              key={plan.name}
+              className={`relative bg-white rounded-lg border-2 p-6 ${
+                plan.popular
+                  ? "border-black shadow-lg"
+                  : plan.current
+                  ? "border-green-500"
+                  : "border-gray-200"
               }`}
             >
-              <CardHeader className="text-center">
-                <CardTitle className="text-center">
-                  <span className="mr-1">{plan.icon}</span>
-                  {plan.name}
-                  <h1 className="text-2xl mt-3">{plan.price}</h1>
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  {plan.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="w-full">
-                <ul className="mb-4 space-y-2">
-                  {plan.features.map((feature, idx) => (
-                    <li key={idx} className="text-sm flex items-center">
-                      <Check className="text-green-500 mr-3" /> {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Button className="w-full">{plan.buttonText}</Button>
-              </CardContent>
-            </Card>
+              {plan.popular && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium">
+                    Most Popular
+                  </span>
+                </div>
+              )}
+
+              {plan.current && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                    Current Plan
+                  </span>
+                </div>
+              )}
+
+              <div className="text-center mb-6">
+                <div className="flex items-center justify-center mb-2">
+                  {plan.icon}
+                  <h3 className="text-lg font-semibold text-gray-900 ml-2">
+                    {plan.name}
+                  </h3>
+                </div>
+                <div className="mb-2">
+                  <span className="text-2xl font-bold text-gray-900">
+                    {plan.price}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600">{plan.description}</p>
+              </div>
+
+              <ul className="space-y-3 mb-6">
+                {plan.features.map((feature, index) => (
+                  <li key={index} className="flex items-start">
+                    <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm text-gray-700">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Button
+                className={`w-full ${
+                  plan.current
+                    ? "bg-green-500 hover:bg-green-600 text-white"
+                    : plan.popular
+                    ? "bg-black hover:bg-gray-800 text-white"
+                    : "bg-white border border-gray-300 text-gray-900 hover:bg-gray-50"
+                }`}
+                onClick={() => handleUpgrade(plan.name)}
+                disabled={plan.current}
+              >
+                {plan.current ? (
+                  "Current Plan"
+                ) : plan.name === "Enterprise" ? (
+                  "Contact Sales"
+                ) : (
+                  <>
+                    Upgrade to {plan.name}
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </>
+                )}
+              </Button>
+            </div>
           ))}
         </div>
       </main>

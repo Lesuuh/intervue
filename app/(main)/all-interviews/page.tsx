@@ -59,7 +59,7 @@ const AllInterviews = () => {
   console.log(data);
 
   const handleCopy = async (interviewId: string) => {
-    const url = `http://localhost:3000/${interviewId}`;
+    const url = `http://localhost:3000/interview/${interviewId}`;
     await navigator.clipboard.writeText(url);
     toast.success("Link Copied");
   };

@@ -1,6 +1,5 @@
 import {
   BriefcaseBusinessIcon,
-  CalendarHeart,
   Code2Icon,
   LayoutDashboard,
   List,
@@ -17,11 +16,11 @@ export const SidebarOptions = [
     icon: LayoutDashboard,
     path: "/dashboard",
   },
-  {
-    name: "Scheduled Interviews",
-    icon: CalendarHeart,
-    path: "/scheduled-interview",
-  },
+  // {
+  //   name: "Scheduled Interviews",
+  //   icon: CalendarHeart,
+  //   path: "/scheduled-interview",
+  // },
   {
     name: "All Interviews",
     icon: List,
@@ -121,4 +120,3 @@ Return your response in valid JSON format exactly like the following structure:
   }
 }
 `.trim();
-

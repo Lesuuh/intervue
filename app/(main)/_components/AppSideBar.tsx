@@ -23,6 +23,7 @@ export function AppSidebar() {
   const path = usePathname();
   const router = useRouter();
   const clearUser = useAuthStore((state) => state.clearUser);
+  const { user } = useAuthStore();
 
   // logout function
   const handleLogout = async () => {
@@ -85,8 +86,8 @@ export function AppSidebar() {
             L
           </p>
           <div>
-            <p>Lesuuh</p>
-            <p className="text-gray-700">lesuuh01@gmail.com</p>
+            <p>{user?.name}</p>
+            <p className="text-gray-700">{user?.email}</p>
           </div>
         </div>
         <div>

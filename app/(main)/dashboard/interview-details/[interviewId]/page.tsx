@@ -19,6 +19,14 @@ const InterviewDetails = () => {
       .maybeSingle();
 
     if (interview) {
+      // Parse questionsList if it's a string
+      if (typeof interview.questionsList === "string") {
+        try {
+          interview.questionsList = JSON.parse(interview.questionsList);
+        } catch {
+          interview.questionsList = [];
+        }
+      }
       setInterview(interview);
     }
     if (error) {
@@ -82,13 +90,16 @@ const InterviewDetails = () => {
         </div>
         <div>
           <h3 className="text-lg font-semibold mb-1">Interview Questions</h3>
-          {/* {interview?.questionsList.map((question, index) => (
+          {(Array.isArray(interview?.questionsList)
+            ? interview.questionsList
+            : []
+          ).map((question, index) => (
             <p key={index}>
               {typeof question === "string"
                 ? question
                 : question.question ?? ""}
             </p>
-          ))} */}
+          ))}
         </div>
         <div>
           <h3 className="text-lg font-semibold mb-1">Candidates (3)</h3>

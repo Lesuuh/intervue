@@ -100,14 +100,13 @@ Based on this interview, provide constructive feedback on the candidate's perfor
 
 2. A brief summary (maximum 3 lines) highlighting the overall impression of the candidate's strengths and areas for improvement.
 
-3. A recommendation: Should this candidate be considered for hiring? Respond with "Yes" or "No".
+3. A recommendation: Should this candidate be considered for hiring? Respond with true or false.
 
 4. A short recommendation message (1 line) to justify your hiring decision.
 
 Return your response in valid JSON format exactly like the following structure:
 
 {
-  "feedback": {
     "rating": {
       "technicalSkills": 0,
       "communication": 0,
@@ -115,8 +114,7 @@ Return your response in valid JSON format exactly like the following structure:
       "experience": 0
     },
     "summary": "",
-    "recommendation": "",
+    "recommendation": ,
     "recommendationMsg": ""
-  }
 }
 `.trim();

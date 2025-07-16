@@ -12,7 +12,7 @@ import Vapi from "@vapi-ai/web";
 import { useCallback, useEffect, useRef, useState } from "react";
 import AlertConfirmation from "./_components/AlertConfirmation";
 import { toast } from "sonner";
-// import axios from "axios";
+import axios from "axios";
 import { ConversationMessage, InterviewDetailsProps } from "@/types";
 import { supabase } from "@/services/supabase";
 import { Button } from "@/components/ui/button";
@@ -59,7 +59,6 @@ const Start = () => {
   const fullName = useStartInterviewStore((state) => state.username);
   const [interviewDetails, setInterviewDetails] =
     useState<InterviewDetailsProps>();
-
 
   // get the interview details
   const getInterviewDetails = useCallback(async () => {
@@ -235,18 +234,15 @@ Ensure the interview remains focused on React.
 
   // generate feedback
   const generateFeedback = async () => {
-    console.log("Sending conversation:", filteredConversation);
     try {
-      // const res = await axios.post("/api/ai-feedback", filteredConversation);
+      const res = await axios.post("/api/ai-feedback", filteredConversation);
 
-      // const result = res.data;
+      const result = res.data;
 
       const { error } = await supabase
         .from("Candidates")
         .update({
-          feedback: filteredConversation,
-          recommendation: true,
-          score: 6,
+          feedback: result,
         })
         .eq("email", email);
 

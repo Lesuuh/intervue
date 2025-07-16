@@ -4,19 +4,17 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
 const mockFeedback = {
-  feedback: {
-    rating: {
-      technicalSkills: 8,
-      communication: 8,
-      problemSolving: 7,
-      experience: 6,
-    },
-    summary:
-      "The candidate demonstrates solid foundational knowledge of React concepts and communicates clearly. They show awareness of performance optimization techniques but could improve depth in problem-solving and practical experience. Overall, they have a good base to build upon.",
-    recommendation: "Yes",
-    recommendationMsg:
-      "The candidate shows promise with strong fundamentals and effective communication, making them a good fit for further development.",
+  rating: {
+    technicalSkills: 8,
+    communication: 8,
+    problemSolving: 7,
+    experience: 7,
   },
+  summary:
+    "The candidate shows strong React skills and solid understanding of state management. Communication was clear and examples were relevant. Some experience with backend integration but could deepen expertise further.",
+  recommendation: true,
+  recommendationMsg:
+    "Candidate demonstrates good technical capability and should be considered for hiring.",
 };
 
 export async function POST(req: Request) {

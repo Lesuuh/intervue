@@ -54,29 +54,13 @@ const Start = () => {
   const vapiRef = useRef<Vapi | null>(null);
   const [isAISpeaking, setIsAISpeaking] = useState(true);
   const [conversation, setConversation] = useState<ConversationMessage[]>();
-  const [fullName, setFullName] = useState("");
   const router = useRouter();
   const email = useStartInterviewStore((state) => state.userEmail);
+  const fullName = useStartInterviewStore((state) => state.username);
   const [interviewDetails, setInterviewDetails] =
     useState<InterviewDetailsProps>();
 
   // get the candidate full name
-  const getCandidateName = useCallback(async () => {
-    const { data, error } = await supabase
-      .from("Candidates")
-      .select("fullName")
-      .eq("email", email)
-      .maybeSingle();
-
-    if (data) {
-      setFullName(data.fullName);
-    }
-
-    if (error) {
-      console.log(error.message);
-      toast.error(error.message);
-    }
-  }, [interview_id]);
 
   // get the interview details
   const getInterviewDetails = useCallback(async () => {
@@ -151,12 +135,11 @@ const Start = () => {
 
   // start interview
   useEffect(() => {
-    getCandidateName();
     getInterviewDetails();
     if (fullName && vapiRef.current) {
       // startCall();
     }
-  }, [fullName, getCandidateName]);
+  }, []);
 
   // start interview
   const startCall = async () => {
@@ -261,7 +244,11 @@ Ensure the interview remains focused on React.
 
       const { error } = await supabase
         .from("Candidates")
-        .update({ feedback: filteredConversation, recommendation: true })
+        .update({
+          feedback: filteredConversation,
+          recommendation: true,
+          score: 6,
+        })
         .eq("email", email);
 
       if (error) {

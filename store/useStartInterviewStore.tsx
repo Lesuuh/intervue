@@ -11,13 +11,21 @@ export const useStartInterviewStore = create<InterviewState>()(
       userEmail: "",
 
       setInterviewDetails: (details: InterviewDetailsProps) =>
-        set(() => ({ interviewDetails: details })),
+        set({ interviewDetails: details }),
 
-      setUsername: (name: string) => set(() => ({ username: name })),
+      setUsername: (name: string) => set({ username: name }),
 
-      setInterviewId: (id: string) => set(() => ({ interviewId: id })),
+      setInterviewId: (id: string) => set({ interviewId: id }),
 
-      setUserEmail: (email: string) => set(() => ({ userEmail: email })),
+      setUserEmail: (email: string) => set({ userEmail: email }),
+
+      clearInterviewDetails: () =>
+        set({
+          interviewDetails: null,
+          userEmail: "",
+          interviewId: "",
+          username: "",
+        }),
     }),
     {
       name: "start-interview-storage",

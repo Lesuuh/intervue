@@ -23,6 +23,7 @@ const Interview = () => {
   const setCandidateEmail = useStartInterviewStore(
     (state) => state.setUserEmail
   );
+  const setCandidateName = useStartInterviewStore((state) => state.setUsername);
 
   useEffect(() => {
     getInterviewDetails();
@@ -59,7 +60,7 @@ const Interview = () => {
     }
   };
 
-  const onJoinInterview = async () => {
+  const startInterview = async () => {
     if (!fullName || !email) {
       toast.error("Please enter all details to proceed");
     }
@@ -79,6 +80,7 @@ const Interview = () => {
     }
 
     setCandidateEmail(email);
+    setCandidateName(fullName);
 
     router.push(`/interview/${interview_id}/start?name=${fullName}`);
   };
@@ -151,7 +153,7 @@ const Interview = () => {
         </div>
 
         <Button
-          onClick={onJoinInterview}
+          onClick={startInterview}
           disabled={!fullName}
           className="w-full py-3 cursor-pointer"
         >

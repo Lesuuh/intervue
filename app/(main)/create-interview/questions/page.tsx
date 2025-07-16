@@ -13,39 +13,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-// const questionList = [
-//   {
-//     id: 1,
-//     type: "Behavioural",
-//     label: "Q1",
-//     question: "Tell me about your experience with frontend development.",
-//   },
-//   {
-//     id: 2,
-//     type: "Technical",
-//     label: "Q2",
-//     question: "What is the virtual DOM and how does it work in React?",
-//   },
-//   {
-//     id: 3,
-//     type: "Technical",
-//     label: "Q3",
-//     question: "Can you explain the difference between let, const, and var?",
-//   },
-//   {
-//     id: 4,
-//     type: "Behavioural",
-//     label: "Q4",
-//     question: "Describe a time you overcame a challenge in a team project.",
-//   },
-//   {
-//     id: 5,
-//     type: "System Design",
-//     label: "Q5",
-//     question:
-//       "How would you design a scalable component architecture in React?",
-//   },
-// ];
+
 
 // Type color mapping
 const typeColors: Record<string, string> = {
@@ -74,7 +42,7 @@ const Questions = () => {
       setLoading(true);
       setError(false);
 
-      const res = await axios.post("/api/ai-model", { ...formData });
+      const res = await axios.post("/api/ai-questions", { ...formData });
 
       if (res.status !== 200) {
         throw new Error("Failed to fetch data from server");

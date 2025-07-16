@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/services/supabase";
 import { InterviewDetailsProps } from "@/types";
 import { Calendar, Clock, Clock2, Tag } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -11,6 +11,7 @@ const InterviewDetails = () => {
   const { interviewId } = useParams();
   const [interview, setInterview] = useState<InterviewDetailsProps>();
   const [candidates, setCandidates] = useState<any[]>([]);
+  const router = useRouter();
 
   // Get interview details
   const getInterviewDetails = async () => {
@@ -176,9 +177,7 @@ const InterviewDetails = () => {
                       <Button
                         className=" px-3 py-3 rounded bg-black text-white text-xs font-semibold hover:bg-gray-900 transition"
                         onClick={() => {
-                          // Replace with your navigation logic, e.g.:
-                          // router.push(`/candidates/${cdn.id}`)
-                          alert(`View candidate: ${cdn.fullName}`);
+                          router.push(`/candidate-report/${cdn.id}`);
                         }}
                       >
                         View Report

@@ -60,7 +60,6 @@ const Start = () => {
   const [interviewDetails, setInterviewDetails] =
     useState<InterviewDetailsProps>();
 
-  // get the candidate full name
 
   // get the interview details
   const getInterviewDetails = useCallback(async () => {

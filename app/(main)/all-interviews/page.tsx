@@ -6,7 +6,7 @@ import { supabase } from "@/services/supabase";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useQuery } from "@tanstack/react-query";
 import { differenceInDays, format, isBefore } from "date-fns";
-import { Clock, Copy, ExternalLink, MoreHorizontal } from "lucide-react";
+import { Clock, Copy, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -62,6 +62,10 @@ const AllInterviews = () => {
     const url = `http://localhost:3000/interview/${interviewId}`;
     await navigator.clipboard.writeText(url);
     toast.success("Link Copied");
+  };
+
+  const handleView = (interviewId: string) => {
+    router.push(`/interview-details/${interviewId}`);
   };
 
   return (
@@ -120,7 +124,11 @@ const AllInterviews = () => {
                   }
 
                   return (
-                    <tr key={interview.id} className="hover:bg-gray-50">
+                    <tr
+                      key={interview.id}
+                      className="hover:bg-gray-50 cursor-pointer"
+                      onClick={() => handleView(interview.interview_id)}
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <div className="text-sm font-medium text-gray-900">
@@ -176,10 +184,6 @@ const AllInterviews = () => {
                               <ExternalLink className="h-4 w-4" />
                             </Button>
                           </a>
-
-                          <Button size="sm" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
                         </div>
                       </td>
                     </tr>

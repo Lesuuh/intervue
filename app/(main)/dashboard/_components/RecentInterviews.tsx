@@ -33,7 +33,7 @@ const RecentInterviews = () => {
   }, []);
 
   const handleView = (interviewId: string) => {
-    router.push(`/dashboard/interview-details/${interviewId}`);
+    router.push(`/interview-details/${interviewId}`);
   };
 
   if (!recentInterviews || recentInterviews.length === 0) {

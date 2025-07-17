@@ -19,7 +19,7 @@ const Login = () => {
 
   async function signInWithEmail() {
     try {
-      const { data, error } = await login.mutateAsync({
+      const { error } = await login.mutateAsync({
         email,
         password,
       });

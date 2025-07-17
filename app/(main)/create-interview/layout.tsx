@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Separator } from "@radix-ui/react-separator";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -8,7 +7,7 @@ import React, { useState } from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const [step, setStep] = useState(1);
+  const [step] = useState(1);
 
   const progressSteps = [
     { label: "Details", completed: step >= 1 },

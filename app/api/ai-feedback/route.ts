@@ -3,19 +3,19 @@ import { ConversationMessage } from "@/types";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
-const mockFeedback = {
-  rating: {
-    technicalSkills: 8,
-    communication: 8,
-    problemSolving: 7,
-    experience: 7,
-  },
-  summary:
-    "The candidate shows strong React skills and solid understanding of state management. Communication was clear and examples were relevant. Some experience with backend integration but could deepen expertise further.",
-  recommendation: true,
-  recommendationMsg:
-    "Candidate demonstrates good technical capability and should be considered for hiring.",
-};
+// const mockFeedback = {
+//   rating: {
+//     technicalSkills: 8,
+//     communication: 8,
+//     problemSolving: 7,
+//     experience: 7,
+//   },
+//   summary:
+//     "The candidate shows strong React skills and solid understanding of state management. Communication was clear and examples were relevant. Some experience with backend integration but could deepen expertise further.",
+//   recommendation: true,
+//   recommendationMsg:
+//     "Candidate demonstrates good technical capability and should be considered for hiring.",
+// };
 
 export async function POST(req: Request) {
   console.log("=== API ROUTE HIT ===");
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
 
     //   pass the final prompt to the ai model
     const openai = new OpenAI({
-      baseURL: "https://openrouter.ai/api/1",
+      baseURL: "https://openrouter.ai/api/v1",
       apiKey: process.env.OPEN_ROUTER_API_KEY,
     });
 
@@ -62,18 +62,18 @@ export async function POST(req: Request) {
     return NextResponse.json(completion.choices[0].message.content);
   } catch (error) {
     console.error("OpenAI error:", error);
-    return NextResponse.json(mockFeedback, { status: 200 });
+    // return NextResponse.json(mockFeedback, { status: 200 });
     // console.error("Failed in POST handler:", error);
     // return NextResponse.json(
     //   { error: "Invalid request body" },
     //   { status: 400 }
     // );
-    // return NextResponse.json(
-    //   {
-    //     message: "Internal Server Error",
-    //     error: error instanceof Error ? error.message : error,
-    //   },
-    //   { status: 500 }
-    // );
+    return NextResponse.json(
+      {
+        message: "Internal Server Error",
+        error: error instanceof Error ? error.message : error,
+      },
+      { status: 500 }
+    );
   }
 }

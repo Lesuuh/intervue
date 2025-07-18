@@ -13,8 +13,6 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-
-
 // Type color mapping
 const typeColors: Record<string, string> = {
   Behavioural: "bg-blue-50 text-blue-500",
@@ -32,48 +30,47 @@ const Questions = () => {
 
   useEffect(() => {
     if (formData) {
+      // generate questions using AI
+      const generateQuestions = async () => {
+        try {
+          setLoading(true);
+          setError(false);
+
+          const res = await axios.post("/api/ai-questions", { ...formData });
+
+          if (res.status !== 200) {
+            throw new Error("Failed to fetch data from server");
+          }
+
+          const rawData = res.data;
+          const cleanedData = rawData.replace(/```json|```/g, "").trim();
+          const parsedData = JSON.parse(cleanedData);
+
+          const result = parsedData.interviewQuestions.map(
+            (item: { question: string; type: string }) => ({
+              question: item.question,
+              type: item.type,
+            })
+          );
+
+          setQuestions(result);
+          console.log(result);
+        } catch (error) {
+          toast.error("Server Error, Try again later", {
+            style: {
+              backgroundColor: "#fee2e2",
+              color: "#b91c1c",
+            },
+          });
+          console.error(error);
+          setError(true);
+        } finally {
+          setLoading(false);
+        }
+      };
       generateQuestions();
     }
-  }, []);
-
-  // generate questions using AI
-  const generateQuestions = async () => {
-    try {
-      setLoading(true);
-      setError(false);
-
-      const res = await axios.post("/api/ai-questions", { ...formData });
-
-      if (res.status !== 200) {
-        throw new Error("Failed to fetch data from server");
-      }
-
-      const rawData = res.data;
-      const cleanedData = rawData.replace(/```json|```/g, "").trim();
-      const parsedData = JSON.parse(cleanedData);
-
-      const result = parsedData.interviewQuestions.map(
-        (item: { question: string; type: string }) => ({
-          question: item.question,
-          type: item.type,
-        })
-      );
-
-      setQuestions(result);
-      console.log(result);
-    } catch (error) {
-      toast.error("Server Error, Try again later", {
-        style: {
-          backgroundColor: "#fee2e2",
-          color: "#b91c1c",
-        },
-      });
-      console.error(error);
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [formData]);
 
   // then send the question to supabase along with the interview_id
   const createInterview = useCreateInterview();

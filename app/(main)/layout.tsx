@@ -14,23 +14,22 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const { data: session, isLoading, error } = useCurrentUserSession();
 
-  const getUserDetails = async () => {
-    if (session) {
-      const { data } = await supabase
-        .from("Users")
-        .select("*")
-        .eq("email", session.user.email)
-        .single();
-      useAuthStore.getState().setUser(data);
-    }
-  };
-
   useEffect(() => {
     if (isLoading) return;
     if (!session) {
       router.push("/login");
       return;
     }
+    const getUserDetails = async () => {
+      if (session) {
+        const { data } = await supabase
+          .from("Users")
+          .select("*")
+          .eq("email", session.user.email)
+          .single();
+        useAuthStore.getState().setUser(data);
+      }
+    };
     getUserDetails();
     if (error) {
       toast.error(error.message);

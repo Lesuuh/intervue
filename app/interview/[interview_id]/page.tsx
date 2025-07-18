@@ -26,39 +26,38 @@ const Interview = () => {
   const setCandidateName = useStartInterviewStore((state) => state.setUsername);
 
   useEffect(() => {
-    getInterviewDetails();
-  }, []);
+    const getInterviewDetails = async () => {
+      setisLoading(true);
+      try {
+        if (!interview_id) {
+          setisLoading(false);
+          toast.error("Interview is missing or not found");
+          return;
+        }
+        const { data, error } = await supabase
+          .from("Interviews")
+          .select("*")
+          .eq("interview_id", interview_id)
+          .single();
 
-  const getInterviewDetails = async () => {
-    setisLoading(true);
-    try {
-      if (!interview_id) {
+        if (error || !data) {
+          toast.error("Failed to fetch interview details");
+          return;
+        }
+
+        if (data) {
+          setInterviewDetails(data);
+        }
+      } catch (error) {
         setisLoading(false);
-        toast.error("Interview is missing or not found");
-        return;
+        const err = error as Error;
+        toast.error(`Interview not found ${err.message}`);
+      } finally {
+        setisLoading(false);
       }
-      const { data, error } = await supabase
-        .from("Interviews")
-        .select("*")
-        .eq("interview_id", interview_id)
-        .single();
-
-      if (error || !data) {
-        toast.error("Failed to fetch interview details");
-        return;
-      }
-
-      if (data) {
-        setInterviewDetails(data);
-      }
-    } catch (error) {
-      setisLoading(false);
-      const err = error as Error;
-      toast.error(`Interview not found ${err.message}`);
-    } finally {
-      setisLoading(false);
-    }
-  };
+    };
+    getInterviewDetails();
+  }, [interview_id]);
 
   const startInterview = async () => {
     if (!fullName || !email) {

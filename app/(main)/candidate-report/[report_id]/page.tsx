@@ -30,27 +30,26 @@ const CandidateReport = () => {
 
   const [candidate, setCandidate] = useState<candidateProps>();
 
-  const getCandidate = async () => {
-    const { data, error } = await supabase
-      .from("Candidates")
-      .select("*")
-      .eq("id", report_id)
-      .single();
-
-    if (data) {
-      setCandidate(data);
-    }
-
-    if (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    getCandidate();
-  }, []);
+    const getCandidate = async () => {
+      const { data, error } = await supabase
+        .from("Candidates")
+        .select("*")
+        .eq("id", report_id)
+        .single();
 
-  console.log("report", candidate)
+      if (data) {
+        setCandidate(data);
+      }
+
+      if (error) {
+        console.log(error);
+      }
+    };
+    getCandidate();
+  }, [report_id]);
+
+  console.log("report", candidate);
 
   return (
     <div className="w-full my-20 mx-auto p-6 bg-white rounded-lg shadow-lg">

@@ -36,7 +36,7 @@ const FormContainer = ({
 
   useEffect(() => {
     onHandleInputChange("interviewType", interviewType);
-  }, [interviewType]);
+  }, [interviewType, onHandleInputChange]);
 
   return (
     <div className="p-5 bg-white rounded-xl space-y-2 w-full">

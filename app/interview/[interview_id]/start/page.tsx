@@ -135,49 +135,45 @@ const Start = () => {
   useEffect(() => {
     getInterviewDetails();
     if (fullName && vapiRef.current) {
-      startCall();
-    }
-  }, []);
+      // start interview
+      const startCall = async () => {
+        const rawQuestionList = interviewDetails?.questionsList;
+        let parsedList = [];
 
-  // start interview
-  const startCall = async () => {
-    const rawQuestionList = interviewDetails?.questionsList;
-    let parsedList = [];
+        try {
+          parsedList =
+            typeof rawQuestionList === "string"
+              ? JSON.parse(rawQuestionList)
+              : rawQuestionList;
+        } catch (error) {
+          console.error("Failed to parse questionsList", error);
+          return;
+        }
 
-    try {
-      parsedList =
-        typeof rawQuestionList === "string"
-          ? JSON.parse(rawQuestionList)
-          : rawQuestionList;
-    } catch (error) {
-      console.error("Failed to parse questionsList", error);
-      return;
-    }
+        const questionList = parsedList.map(
+          (q: { question: string }) => q.question
+        );
 
-    const questionList = parsedList.map(
-      (q: { question: string }) => q.question
-    );
-
-    await vapiRef.current?.start({
-      name: "AI Recruiter",
-      firstMessage: `Hi ${fullName}, how are you? Ready for your interview on ${interviewDetails?.jobPosition}?`,
-      transcriber: {
-        provider: "deepgram",
-        model: "nova-2",
-        language: "en-US",
-      },
-      voice: {
-        provider: "11labs",
-        voiceId: "21m00Tcm4TlvDq8ikWAM",
-      },
-      model: {
-        provider: "openai",
-        model: "gpt-4o",
-        temperature: 0.7,
-        messages: [
-          {
-            role: "system",
-            content: `
+        await vapiRef.current?.start({
+          name: "AI Recruiter",
+          firstMessage: `Hi ${fullName}, how are you? Ready for your interview on ${interviewDetails?.jobPosition}?`,
+          transcriber: {
+            provider: "deepgram",
+            model: "nova-2",
+            language: "en-US",
+          },
+          voice: {
+            provider: "11labs",
+            voiceId: "21m00Tcm4TlvDq8ikWAM",
+          },
+          model: {
+            provider: "openai",
+            model: "gpt-4o",
+            temperature: 0.7,
+            messages: [
+              {
+                role: "system",
+                content: `
 You are an AI voice assistant conducting interviews.
 Your job is to ask candidates provided interview questions, and assess their responses.
 
@@ -211,11 +207,20 @@ Key Guidelines:
 
 Ensure the interview remains focused on React.
 `.trim(),
+              },
+            ],
           },
-        ],
-      },
-    });
-  };
+        });
+      };
+
+      startCall();
+    }
+  }, [
+    fullName,
+    getInterviewDetails,
+    interviewDetails?.jobPosition,
+    interviewDetails?.questionsList,
+  ]);
 
   // end the call
   const handleStopInterview = () => {

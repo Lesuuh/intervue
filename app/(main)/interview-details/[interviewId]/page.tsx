@@ -13,33 +13,32 @@ const InterviewDetails = () => {
   const [candidates, setCandidates] = useState<any[]>([]);
   const router = useRouter();
 
-  // Get interview details
-  const getInterviewDetails = async () => {
-    const { data: interview, error } = await supabase
-      .from("Interviews")
-      .select("*")
-      .eq("interview_id", interviewId)
-      .maybeSingle();
-
-    if (interview) {
-      // Parse questionsList if it's a string
-      if (typeof interview.questionsList === "string") {
-        try {
-          interview.questionsList = JSON.parse(interview.questionsList);
-        } catch {
-          interview.questionsList = [];
-        }
-      }
-      setInterview(interview);
-    }
-    if (error) {
-      console.log(error.message);
-      toast.error(error.message);
-    }
-  };
-
   useEffect(() => {
     if (interviewId) {
+      // Get interview details
+      const getInterviewDetails = async () => {
+        const { data: interview, error } = await supabase
+          .from("Interviews")
+          .select("*")
+          .eq("interview_id", interviewId)
+          .maybeSingle();
+
+        if (interview) {
+          // Parse questionsList if it's a string
+          if (typeof interview.questionsList === "string") {
+            try {
+              interview.questionsList = JSON.parse(interview.questionsList);
+            } catch {
+              interview.questionsList = [];
+            }
+          }
+          setInterview(interview);
+        }
+        if (error) {
+          console.log(error.message);
+          toast.error(error.message);
+        }
+      };
       getInterviewDetails();
       getInterviewCandidates(interviewId as string);
     }

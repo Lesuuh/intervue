@@ -5,9 +5,7 @@ import { CircleCheckBig } from "lucide-react";
 import { useEffect } from "react";
 
 const Thankyou = () => {
-  const clearInterviewDetails = useStartInterviewStore(
-    (state) => state.clearInterviewDetails
-  );
+  const { clearInterviewDetails } = useStartInterviewStore((state) => state);
 
   useEffect(() => {
     clearInterviewDetails();

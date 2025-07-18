@@ -45,6 +45,7 @@ export interface InterviewState {
   setUsername: (name: string) => void;
   setUserEmail: (email: string) => void;
   setInterviewId: (id: string) => void;
+  clearInterviewDetails: () => void;
 }
 
 type MessageRole = "system" | "assistant" | "user";

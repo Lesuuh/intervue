@@ -7,10 +7,31 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+type candidateProps = {
+  id: number;
+  created_at: string;
+  interview_id: string;
+  feedback: {
+    rating: {
+      technicalSkills: number;
+      communication: number;
+      problemSolving: number;
+      experience: number;
+    };
+    summary: string;
+    recommendation: boolean;
+    recommendationMsg: string;
+  };
+  fullName: string;
+  email: string;
+  role: string;
+  score: number;
+};
+
 const InterviewDetails = () => {
   const { interviewId } = useParams();
   const [interview, setInterview] = useState<InterviewDetailsProps>();
-  const [candidates, setCandidates] = useState<any[]>([]);
+  const [candidates, setCandidates] = useState<candidateProps[]>([]);
   const router = useRouter();
 
   useEffect(() => {

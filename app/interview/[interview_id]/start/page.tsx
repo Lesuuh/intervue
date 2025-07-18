@@ -19,6 +19,10 @@ import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
 import { useStartInterviewStore } from "@/store/useStartInterviewStore";
 
+type VapiMessage = {
+  conversation: ConversationMessage[];
+};
+
 // const mockConversation: ConversationMessage[] = [
 //   {
 //     role: "system",
@@ -84,7 +88,7 @@ const Start = () => {
     }
     const vapi = vapiRef.current;
     // handle the conversation message and set to a state
-    const handleMessage = (message: any) => {
+    const handleMessage = (message: VapiMessage) => {
       console.log("✅ Message received:", message);
       if (message?.conversation) {
         const convo = message.conversation;

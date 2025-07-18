@@ -1,8 +1,8 @@
-import { InterviewDetailsProps, InterviewState } from "@/types";
+import { InterviewDetailsProps, InterviewStartState } from "@/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export const useStartInterviewStore = create<InterviewState>()(
+export const useStartInterviewStore = create<InterviewStartState>()(
   persist(
     (set) => ({
       interviewDetails: null,

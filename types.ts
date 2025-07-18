@@ -45,6 +45,16 @@ export interface InterviewState {
   setUsername: (name: string) => void;
   setUserEmail: (email: string) => void;
   setInterviewId: (id: string) => void;
+}
+export interface InterviewStartState {
+  interviewDetails: InterviewDetailsProps | null;
+  username: string;
+  userEmail: string;
+  interviewId: string;
+  setInterviewDetails: (details: InterviewDetailsProps) => void;
+  setUsername: (name: string) => void;
+  setUserEmail: (email: string) => void;
+  setInterviewId: (id: string) => void;
   clearInterviewDetails: () => void;
 }
 
